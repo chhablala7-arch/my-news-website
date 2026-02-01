@@ -1,15 +1,5 @@
 const newsContainer = document.getElementById("news-container");
-
-const newsData = [
-  {
-    title: "पहली न्यूज़",
-    description: "यह हमारी पहली खबर है"
-  },
-  {
-    title: "दूसरी न्यूज़",
-    description: "यह दूसरी ताज़ा खबर है"
-  }
-];
+const newsData = JSON.parse(localStorage.getItem("newsData")) || [];
 
 newsData.forEach(news => {
   const div = document.createElement("div");
