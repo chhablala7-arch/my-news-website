@@ -1,0 +1,13 @@
+backend:
+  name: github
+  repo: chhablala7-arch/my-news-website
+  branch: main
+
+collections:
+  - name: "news"
+    label: "News"
+    folder: "news"
+    create: true
+    fields:
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Content", name: "body", widget: "markdown" }
