@@ -34,7 +34,8 @@ form.addEventListener("submit", (e) => {
   document.getElementById("news-title").value = "";
   document.getElementById("news-desc").value = "";
 
-  renderNews();
+  renderNews(); // refresh news list after adding
 });
 
+// initial render on page load
 renderNews();
