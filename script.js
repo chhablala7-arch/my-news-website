@@ -1,1 +1,1 @@
-console.log("News website loaded");
+console.log("Website loaded");
