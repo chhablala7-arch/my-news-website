@@ -1,6 +1,22 @@
 <!DOCTYPE html>
-<html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel</title>
+  <link rel="stylesheet" href="../style.css">
+</head>
 <body>
-<script src="https://unpkg.com/netlify-cms@^2.0.0/dist/netlify-cms.js"></script>
+  <h1>Admin Panel</h1>
+
+  <form id="news-form">
+    <input type="text" id="news-title" placeholder="News Title" required>
+    <textarea id="news-desc" placeholder="News Description" required></textarea>
+    <button type="submit">Add News</button>
+  </form>
+
+  <div id="news-list"></div>
+
+  <script src="admin.js"></script>
 </body>
 </html>
