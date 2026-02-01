@@ -1,30 +1,50 @@
 body {
   font-family: Arial, sans-serif;
   margin: 0;
-  background: #f2f2f2;
+  padding: 0;
 }
 
 header {
-  background: #d32f2f;
+  background: #4CAF50;
   color: white;
-  padding: 15px;
   text-align: center;
+  padding: 15px 0;
 }
 
-#news-container {
-  padding: 15px;
+h1, h3 {
+  margin: 10px;
+}
+
+main {
+  padding: 10px;
 }
 
 .news {
-  background: white;
-  padding: 10px;
-  margin-bottom: 10px;
-  border-radius: 5px;
+  border-bottom: 1px solid #ccc;
+  padding: 10px 0;
 }
 
 footer {
   text-align: center;
   padding: 10px;
-  background: #333;
+  background: #eee;
+}
+
+/* Admin Styling */
+form input, form textarea {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 10px;
+}
+
+form button {
+  padding: 10px;
+  background: #4CAF50;
   color: white;
+  border: none;
+  cursor: pointer;
+}
+
+form button:hover {
+  background: #45a049;
 }
