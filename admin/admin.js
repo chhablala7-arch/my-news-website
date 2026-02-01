@@ -37,5 +37,4 @@ form.addEventListener("submit", (e) => {
   renderNews();
 });
 
-// Initial render
 renderNews();
