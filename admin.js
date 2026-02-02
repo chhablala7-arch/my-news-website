@@ -1,41 +1,33 @@
-// LOGIN FUNCTION
-function login() {
-  var email = document.getElementById("email").value;
-  var password = document.getElementById("password").value;
+// Initialize Firebase Auth
+const auth = firebase.auth();
 
-  auth.signInWithEmailAndPassword(email, password)
-    .then(function () {
-      alert("✅ Login Successful");
-    })
-    .catch(function (error) {
-      alert(error.message);
-    });
-}
+// Login button click
+document.getElementById("login-btn").addEventListener("click", () => {
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value;
 
-// AUTH STATE CHECK
-auth.onAuthStateChanged(function (user) {
-  if (user) {
-    document.getElementById("loginBox").style.display = "none";
-    document.getElementById("newsBox").style.display = "block";
-  }
+    if (!email || !password) {
+        document.getElementById("login-error").innerText = "ईमेल और पासवर्ड डालें।";
+        return;
+    }
+
+    auth.signInWithEmailAndPassword(email, password)
+        .then(userCredential => {
+            // Login success
+            document.getElementById("login-error").innerText = "";
+            // Redirect to admin dashboard page
+            window.location.href = "admin-dashboard.html"; 
+        })
+        .catch(error => {
+            // Show error message
+            document.getElementById("login-error").innerText = error.message;
+        });
 });
 
-// ADD NEWS
-function addNews() {
-  var title = document.getElementById("title").value;
-  var desc = document.getElementById("desc").value;
-  var image = document.getElementById("image").value;
-
-  db.collection("news").add({
-    title: title,
-    description: desc,
-    image: image,
-    date: firebase.firestore.FieldValue.serverTimestamp()
-  })
-  .then(function () {
-    alert("📰 News Added Successfully");
-  })
-  .catch(function (error) {
-    alert("❌ Error: " + error.message);
-  });
-}
+// Optional: check if already logged in
+auth.onAuthStateChanged(user => {
+    if (user) {
+        // Already logged in → redirect to dashboard
+        window.location.href = "admin-dashboard.html";
+    }
+});
