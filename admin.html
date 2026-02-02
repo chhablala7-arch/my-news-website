@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<title>Admin Panel</title>
+</head>
+<body>
+
+<h2>🛠️ Admin Panel</h2>
+
+<div id="loginBox">
+  <input id="email" placeholder="Email">
+  <input id="password" type="password" placeholder="Password">
+  <button onclick="login()">Login</button>
+</div>
+
+<div id="newsBox" style="display:none;">
+  <input id="title" placeholder="Title">
+  <textarea id="desc" placeholder="Description"></textarea>
+  <input id="image" placeholder="Image URL">
+  <button onclick="addNews()">Add News</button>
+</div>
+
+<!-- ⚠️ SAME FOLDER FILES -->
+<script src="firebase.js"></script>
+<script src="admin.js"></script>
+
+</body>
+</html>
