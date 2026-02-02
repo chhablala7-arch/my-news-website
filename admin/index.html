@@ -1,107 +1,30 @@
 <!DOCTYPE html>
-<html>
+<html lang="hi">
 <head>
-  <title>Admin Panel</title>
-
-  <!-- Firebase v8 -->
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+<meta charset="UTF-8">
+<title>Admin Panel</title>
 </head>
-<body style="display:none">
+<body>
 
-<h2>Admin Panel</h2>
-<button onclick="logout()">Logout</button>
+<h2>🛠️ Admin Panel</h2>
 
-<form id="news-form">
-  <input id="news-title" placeholder="Title" required><br><br>
-  <textarea id="news-desc" placeholder="Description" required></textarea><br><br>
-  <input id="news-image" placeholder="image/news1.jpg"><br><br>
-  <button type="submit">Add News</button>
-</form>
+<div id="loginBox">
+  <input type="email" id="email" placeholder="Admin Email">
+  <input type="password" id="password" placeholder="Password">
+  <button onclick="login()">Login</button>
+</div>
 
-<hr>
-<div id="news-list"></div>
+<div id="newsBox" style="display:none;">
+  <input type="text" id="title" placeholder="News Title">
+  <textarea id="desc" placeholder="News Description"></textarea>
+  <input type="text" id="image" placeholder="Image URL">
+  <button onclick="addNews()">Add News</button>
+</div>
 
-<script>
-  const firebaseConfig = {
-    apiKey: "AIzaSyD8syqOEEwNxsEUb8tIPL5BFWnBhgsGJg8",
-    authDomain: "chhablal-login.firebaseapp.com",
-    projectId: "chhablal-login",
-    storageBucket: "chhablal-login.appspot.com",
-    messagingSenderId: "234736579008",
-    appId: "1:234736579008:web:04caf7443e035ad0e21825"
-  };
+<!-- Firebase -->
+<script src="firebase.js"></script>
 
-  firebase.initializeApp(firebaseConfig);
-
-  const auth = firebase.auth();
-  const db = firebase.firestore();
-
-  const form = document.getElementById("news-form");
-  const newsList = document.getElementById("news-list");
-  const BASE_URL = "https://chhablala7-arch.github.io/my-news-website/";
-
-  // 🔐 Only admin access
-  auth.onAuthStateChanged(user => {
-    if (!user) {
-      window.location.href = "login.html";
-    } else {
-      document.body.style.display = "block";
-      renderNews();
-    }
-  });
-
-  function logout() {
-    auth.signOut().then(() => {
-      window.location.href = "login.html";
-    });
-  }
-
-  function renderNews() {
-    newsList.innerHTML = "";
-    db.collection("news").orderBy("date", "desc").get()
-      .then(snapshot => {
-        snapshot.forEach(doc => {
-          const d = doc.data();
-          const img = d.image ? `<img src="${BASE_URL}${d.image}" width="150"><br>` : "";
-
-          newsList.innerHTML += `
-            <h3>${d.title}</h3>
-            ${img}
-            <p>${d.description}</p>
-            <button onclick="deleteNews('${doc.id}')">Delete</button>
-            <hr>
-          `;
-        });
-      });
-  }
-
-  function deleteNews(id) {
-    db.collection("news").doc(id).delete().then(renderNews);
-  }
-
-  form.addEventListener("submit", e => {
-    e.preventDefault();
-
-    const title = document.getElementById("news-title").value.trim();
-    const desc  = document.getElementById("news-desc").value.trim();
-    const image = document.getElementById("news-image").value.trim();
-
-    db.collection("news").add({
-      title,
-      description: desc,
-      image,
-      date: firebase.firestore.FieldValue.serverTimestamp()
-    })
-    .then(() => {
-      form.reset();
-      renderNews();
-      alert("✅ News Added Successfully");
-    })
-    .catch(err => alert(err.message));
-  });
-</script>
-
+<!-- Admin Logic -->
+<script src="admin.js"></script>
 </body>
 </html>
