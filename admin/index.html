@@ -3,19 +3,19 @@
 <head>
   <title>Admin Panel</title>
 
-  <!-- Firebase -->
+  <!-- Firebase v8 -->
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
 </head>
-<body>
+<body style="display:none">
 
 <h2>Admin Panel</h2>
 <button onclick="logout()">Logout</button>
 
 <form id="news-form">
-  <input id="news-title" placeholder="Title"><br><br>
-  <textarea id="news-desc" placeholder="Description"></textarea><br><br>
+  <input id="news-title" placeholder="Title" required><br><br>
+  <textarea id="news-desc" placeholder="Description" required></textarea><br><br>
   <input id="news-image" placeholder="image/news1.jpg"><br><br>
   <button type="submit">Add News</button>
 </form>
@@ -25,28 +25,37 @@
 
 <script>
   const firebaseConfig = {
-    apiKey: "YOUR_API_KEY",
-    authDomain: "chhabalal-31cea.firebaseapp.com",
-    projectId: "chhabalal-31cea"
+    apiKey: "AIzaSyD8syqOEEwNxsEUb8tIPL5BFWnBhgsGJg8",
+    authDomain: "chhablal-login.firebaseapp.com",
+    projectId: "chhablal-login",
+    storageBucket: "chhablal-login.appspot.com",
+    messagingSenderId: "234736579008",
+    appId: "1:234736579008:web:04caf7443e035ad0e21825"
   };
 
   firebase.initializeApp(firebaseConfig);
 
+  const auth = firebase.auth();
   const db = firebase.firestore();
+
   const form = document.getElementById("news-form");
   const newsList = document.getElementById("news-list");
   const BASE_URL = "https://chhablala7-arch.github.io/my-news-website/";
 
-  // 🔐 Auth check
-  firebase.auth().onAuthStateChanged(user => {
+  // 🔐 Only admin access
+  auth.onAuthStateChanged(user => {
     if (!user) {
-      alert("❌ Login required");
       window.location.href = "login.html";
+    } else {
+      document.body.style.display = "block";
+      renderNews();
     }
   });
 
   function logout() {
-    firebase.auth().signOut();
+    auth.signOut().then(() => {
+      window.location.href = "login.html";
+    });
   }
 
   function renderNews() {
@@ -55,7 +64,7 @@
       .then(snapshot => {
         snapshot.forEach(doc => {
           const d = doc.data();
-          const img = d.image ? `<img src="${BASE_URL}${d.image}" width="150">` : "";
+          const img = d.image ? `<img src="${BASE_URL}${d.image}" width="150"><br>` : "";
 
           newsList.innerHTML += `
             <h3>${d.title}</h3>
@@ -75,21 +84,23 @@
   form.addEventListener("submit", e => {
     e.preventDefault();
 
+    const title = document.getElementById("news-title").value.trim();
+    const desc  = document.getElementById("news-desc").value.trim();
+    const image = document.getElementById("news-image").value.trim();
+
     db.collection("news").add({
-      title: news-title.value,
-      description: news-desc.value,
-      image: news-image.value,
+      title,
+      description: desc,
+      image,
       date: firebase.firestore.FieldValue.serverTimestamp()
     })
     .then(() => {
       form.reset();
       renderNews();
-      alert("✅ News Added");
+      alert("✅ News Added Successfully");
     })
     .catch(err => alert(err.message));
   });
-
-  renderNews();
 </script>
 
 </body>
