@@ -1,9 +1,40 @@
-<!-- Firebase SDK (compat) -->
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel - My News Website</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    h1 { color: #333; }
+    input, textarea { display: block; width: 100%; margin-bottom: 10px; padding: 8px; }
+    button { padding: 10px 15px; cursor: pointer; }
+    #news-list div { border-bottom: 1px solid #ccc; padding: 10px 0; }
+    #news-list button { margin-top: 5px; }
+  </style>
+</head>
+<body>
 
-<!-- Firebase config (parent folder से) -->
-<script src="../firebase-app.js"></script>
+  <h1>Admin Panel</h1>
 
-<!-- Admin logic -->
-<script src="admin.js"></script>
+  <form id="news-form">
+    <input type="text" id="news-title" placeholder="News Title" required>
+    <textarea id="news-desc" placeholder="News Description" rows="4" required></textarea>
+    <button type="submit">Add News</button>
+  </form>
+
+  <h2>Existing News</h2>
+  <div id="news-list"></div>
+
+  <!-- Firebase SDK (compat) -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+  <!-- Firebase config (parent folder से) -->
+  <script src="../firebase-app.js"></script>
+
+  <!-- Admin JS logic -->
+  <script src="admin.js"></script>
+
+</body>
+</html>
