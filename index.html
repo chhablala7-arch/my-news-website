@@ -4,42 +4,52 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>मेरी न्यूज़ वेबसाइट</title>
+
 <style>
-  body { font-family: Arial, sans-serif; padding: 20px; }
-  img { max-width: 200px; display: block; margin: 8px 0; }
-  hr { margin: 15px 0; }
+body { font-family: Arial; padding: 20px; }
+img { max-width: 100%; margin: 10px 0; }
+hr { margin: 20px 0; }
 </style>
 </head>
-<body>
-<h1>मेरी न्यूज़ वेबसाइट</h1>
-<div id="news-container"></div>
 
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-<script src="firebase-app.js"></script>  <!-- must be before admin.js -->
-<script src="admin.js"></script>
+<body>
+
+<h1>📰 मेरी न्यूज़ वेबसाइट</h1>
+<div id="news-container">Loading...</div>
+
+<!-- Firebase v8 ONLY -->
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+
+<script>
+  var firebaseConfig = {
+    apiKey: "AIzaSyD8syqOEEwNxsEUb8tIPL5BFWnBhgsGJg8",
+    authDomain: "chhablal-login.firebaseapp.com",
+    projectId: "chhablal-login"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+  var db = firebase.firestore();
+</script>
 
 <script>
 const container = document.getElementById("news-container");
-const BASE_URL = "https://chhablala7-arch.github.io/my-news-website/";
 
-function loadNews() {
-  container.innerHTML = "";
-  db.collection("news").orderBy("date", "desc").get()
-    .then(snapshot => {
-      snapshot.forEach(doc => {
-        const data = doc.data();
-        const imageUrl = data.image ? `${BASE_URL}${data.image}` : "";
-        container.innerHTML += `
-          <h3>${data.title}</h3>
-          ${imageUrl ? `<img src="${imageUrl}" alt="News Image">` : ""}
-          <p>${data.description}</p>
-          <hr>
-        `;
-      });
+db.collection("news")
+  .orderBy("date", "desc")
+  .onSnapshot(snapshot => {
+    container.innerHTML = "";
+    snapshot.forEach(doc => {
+      const d = doc.data();
+      container.innerHTML += `
+        <h3>${d.title}</h3>
+        ${d.image ? `<img src="${d.image}">` : ""}
+        <p>${d.description}</p>
+        <hr>
+      `;
     });
-}
-loadNews();
+  });
 </script>
+
 </body>
 </html>
