@@ -1,45 +1,45 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Admin Login</title>
 <style>
-body{font-family:Arial;background:#f2f2f2}
-.box{max-width:360px;margin:80px auto;background:#fff;padding:20px;border-radius:10px}
-input,button{width:100%;padding:12px;margin:8px 0}
+body{background:#667eea;font-family:Arial}
+.box{background:#fff;max-width:360px;margin:80px auto;padding:20px;border-radius:12px}
+input,button{width:100%;padding:12px;margin:8px 0;font-size:16px}
 button{background:#667eea;color:#fff;border:none;border-radius:6px}
-.msg{color:red;text-align:center}
+.msg{text-align:center;color:red;min-height:18px}
 </style>
 </head>
 <body>
 
 <div class="box">
-  <h2>Login / Signup</h2>
-  <input id="email" type="email" placeholder="Email">
-  <input id="password" type="password" placeholder="Password">
-  <button onclick="signup()">Sign Up</button>
-  <button onclick="login()">Login</button>
-  <p class="msg" id="msg"></p>
+<h2>Admin Login</h2>
+<input id="email" type="email" placeholder="Email">
+<input id="password" type="password" placeholder="Password">
+<button onclick="signup()">Sign Up</button>
+<button onclick="login()">Login</button>
+<div class="msg" id="msg"></div>
 </div>
 
 <script src="firebase.js"></script>
 <script>
-const msg = document.getElementById("msg");
-
 function signup(){
-  auth.createUserWithEmailAndPassword(email.value,password.value)
-  .then(()=> msg.innerText="Signup successful")
-  .catch(e=> msg.innerText=e.message);
+ msg.innerText="";
+ auth.createUserWithEmailAndPassword(email.value,password.value)
+ .then(()=>msg.innerText="Signup successful. Now Login.")
+ .catch(e=>msg.innerText=e.message);
 }
 
 function login(){
-  auth.signInWithEmailAndPassword(email.value,password.value)
-  .then(()=> window.location.href="admin.html")
-  .catch(e=> msg.innerText=e.message);
+ msg.innerText="";
+ auth.signInWithEmailAndPassword(email.value,password.value)
+ .then(()=>location.href="admin.html")
+ .catch(e=>msg.innerText=e.message);
 }
 
 auth.onAuthStateChanged(user=>{
-  if(user) window.location.href="admin.html";
+ if(user) location.href="admin.html";
 });
 </script>
 
