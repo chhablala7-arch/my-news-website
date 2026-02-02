@@ -1,5 +1,4 @@
 // Firebase SDK (compat is already loaded in HTML)
-
 const firebaseConfig = {
   apiKey: "AIzaSyCyQqYtGm-cc6cTB8wxG3oVun3tAfic",
   authDomain: "chhabalal-31cea.firebaseapp.com",
@@ -11,4 +10,4 @@ const firebaseConfig = {
 
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();  // 👈 important for admin.js
+const db = firebase.firestore();  // 🔹 must have for admin.js
