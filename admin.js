@@ -26,7 +26,8 @@ document.getElementById("login-btn").addEventListener("click", () => {
 
 // Optional: check if already logged in
 auth.onAuthStateChanged(user => {
-    if (user) {
+    if (user) window.location.href="login.html";
+});{
         // Already logged in → redirect to dashboard
         window.location.href = "admin-dashboard.html";
     }
