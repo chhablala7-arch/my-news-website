@@ -1,6 +1,7 @@
 const form = document.getElementById("news-form");
 const newsList = document.getElementById("news-list");
 
+// Load news from Firestore
 function renderNews() {
   newsList.innerHTML = "";
   db.collection("news").orderBy("date", "desc").get().then(snapshot => {
@@ -11,19 +12,20 @@ function renderNews() {
         <h3>${data.title}</h3>
         <p>${data.description}</p>
         <button onclick="deleteNews('${doc.id}')">Delete</button>
-        <hr>
       `;
       newsList.appendChild(div);
     });
   });
 }
 
+// Delete news
 function deleteNews(id) {
   db.collection("news").doc(id).delete().then(() => {
     renderNews();
   });
 }
 
+// Add news
 form.addEventListener("submit", (e) => {
   e.preventDefault();
   const title = document.getElementById("news-title").value;
@@ -32,11 +34,12 @@ form.addEventListener("submit", (e) => {
   db.collection("news").add({
     title,
     description: desc,
-    date: new Date()
+    date: new Date().toISOString()
   }).then(() => {
     form.reset();
     renderNews();
   });
 });
 
+// Initial load
 renderNews();
