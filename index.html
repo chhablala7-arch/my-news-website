@@ -1,54 +1,31 @@
 <!DOCTYPE html>
-<html lang="hi">
+<html>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>मेरी न्यूज़ वेबसाइट</title>
-
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>My News Website</title>
 <style>
-body { font-family: Arial; padding: 20px; }
-img { max-width: 100%; margin: 10px 0; }
-hr { margin: 20px 0; }
+body{font-family:Arial;padding:15px}
+.news{border-bottom:1px solid #ccc;margin-bottom:10px}
 </style>
 </head>
-
 <body>
 
-<h1>📰 मेरी न्यूज़ वेबसाइट</h1>
-<div id="news-container">Loading...</div>
+<h1>Latest News</h1>
+<div id="news"></div>
 
-<!-- Firebase v8 ONLY -->
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
-
+<script src="firebase.js"></script>
 <script>
-  var firebaseConfig = {
-    apiKey: "AIzaSyD8syqOEEwNxsEUb8tIPL5BFWnBhgsGJg8",
-    authDomain: "chhablal-login.firebaseapp.com",
-    projectId: "chhablal-login"
-  };
-
-  firebase.initializeApp(firebaseConfig);
-  var db = firebase.firestore();
-</script>
-
-<script>
-const container = document.getElementById("news-container");
-
-db.collection("news")
-  .orderBy("date", "desc")
-  .onSnapshot(snapshot => {
-    container.innerHTML = "";
-    snapshot.forEach(doc => {
-      const d = doc.data();
-      container.innerHTML += `
-        <h3>${d.title}</h3>
-        ${d.image ? `<img src="${d.image}">` : ""}
-        <p>${d.description}</p>
-        <hr>
-      `;
-    });
-  });
+db.collection("news").orderBy("date","desc")
+.onSnapshot(snap=>{
+ news.innerHTML="";
+ snap.forEach(doc=>{
+  news.innerHTML+=`
+  <div class="news">
+   <h3>${doc.data().title}</h3>
+   <p>${doc.data().desc}</p>
+  </div>`;
+ });
+});
 </script>
 
 </body>
