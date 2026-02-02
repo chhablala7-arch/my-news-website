@@ -1,26 +1,74 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Admin Dashboard</title>
+<style>
+body{font-family:Arial;background:#f2f2f2;padding:15px}
+.card{background:#fff;padding:15px;border-radius:10px;margin-bottom:15px}
+input,textarea,button{width:100%;padding:10px;margin:6px 0}
+button{background:#667eea;color:#fff;border:none;border-radius:6px}
+.news{border-bottom:1px solid #ccc;padding:8px}
+.del{background:#e74c3c}
+</style>
 </head>
 <body>
 
-<h1>Admin Dashboard</h1>
-<p>आप लॉगिन हो चुके हैं</p>
-<button onclick="logout()">Logout</button>
+<h2>Admin Dashboard</h2>
+
+<div class="card">
+<input id="title" placeholder="News Title">
+<textarea id="desc" placeholder="News Description"></textarea>
+<button onclick="addNews()">Add News</button>
+</div>
+
+<div class="card">
+<h3>All News</h3>
+<div id="newsList"></div>
+</div>
+
+<button class="del" onclick="logout()">Logout</button>
 
 <script src="firebase.js"></script>
 <script>
 auth.onAuthStateChanged(user=>{
-  if(!user) window.location.href="login.html";
+ if(!user) location.href="login.html";
 });
 
-function logout(){
-  auth.signOut().then(()=>{
-    window.location.href="login.html";
-  });
+function addNews(){
+ if(!title.value || !desc.value) return;
+ db.collection("news").add({
+  title:title.value,
+  desc:desc.value,
+  date:firebase.firestore.FieldValue.serverTimestamp()
+ });
+ title.value=""; desc.value="";
 }
+
+function loadNews(){
+ db.collection("news").orderBy("date","desc")
+ .onSnapshot(snap=>{
+  newsList.innerHTML="";
+  snap.forEach(doc=>{
+   newsList.innerHTML+=`
+   <div class="news">
+    <b>${doc.data().title}</b>
+    <p>${doc.data().desc}</p>
+    <button class="del" onclick="delNews('${doc.id}')">Delete</button>
+   </div>`;
+  });
+ });
+}
+
+function delNews(id){
+ db.collection("news").doc(id).delete();
+}
+
+function logout(){
+ auth.signOut().then(()=>location.href="login.html");
+}
+
+loadNews();
 </script>
 
 </body>
