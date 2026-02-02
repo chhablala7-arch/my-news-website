@@ -18,7 +18,7 @@ button:hover{opacity:0.9;}
 
 <h2>Admin Dashboard</h2>
 
-<!-- Add News -->
+<!-- Add News Form -->
 <div>
 <input type="text" id="title" placeholder="News Title">
 <textarea id="desc" placeholder="News Description"></textarea>
@@ -50,6 +50,8 @@ function addNews(){
     msg.innerText="Title और Description दोनों जरूरी हैं";
     return;
   }
+
+  console.log("Button clicked"); // debug
 
   db.collection("news").add({
     title: title,
