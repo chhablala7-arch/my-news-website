@@ -4,17 +4,23 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Admin Panel</title>
+<style>
+  body { font-family: Arial, sans-serif; padding: 20px; }
+  button { padding: 12px 20px; font-size: 16px; cursor: pointer; width: 90%; max-width: 350px; margin-top: 20px; }
+</style>
 </head>
 <body>
+
 <h1>Admin Dashboard</h1>
 <p>आप लॉगिन हो चुके हैं।</p>
 
 <button id="logout-btn">Logout</button>
 
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-<script src="firebase-app.js"></script>
-<script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js" defer></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js" defer></script>
+<script src="firebase-app.js" defer></script>
+
+<script defer>
 const auth = firebase.auth();
 
 document.getElementById("logout-btn").addEventListener("click", () => {
@@ -23,12 +29,11 @@ document.getElementById("logout-btn").addEventListener("click", () => {
     });
 });
 
-// Optional: redirect to login if not logged in
+// Redirect to login if not logged in
 auth.onAuthStateChanged(user => {
-    if (!user) {
-        window.location.href = "login.html";
-    }
+    if (!user) window.location.href = "login.html";
 });
 </script>
+
 </body>
 </html>
