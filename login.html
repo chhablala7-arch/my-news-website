@@ -12,6 +12,7 @@ button{background:#667eea;color:white;border:none;border-radius:6px;cursor:point
 </style>
 </head>
 <body>
+
 <h2>Admin Login</h2>
 <input type="email" id="email" placeholder="Email">
 <input type="password" id="password" placeholder="Password">
@@ -26,7 +27,7 @@ function login(){
   const msg = document.getElementById("msg");
 
   if(!email || !password){
-    msg.innerText="Email और Password जरूरी हैं";
+    msg.innerText="Email और Password डालें।";
     return;
   }
 
@@ -40,5 +41,6 @@ auth.onAuthStateChanged(user=>{
   if(user) window.location.href="admin.html";
 });
 </script>
+
 </body>
 </html>
