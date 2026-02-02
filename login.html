@@ -1,43 +1,28 @@
 <!DOCTYPE html>
-<html>
+<html lang="hi">
 <head>
-  <title>Admin Login</title>
-
-  <!-- Firebase -->
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
-
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Login</title>
+<style>
+  body { font-family: Arial, sans-serif; padding: 20px; }
+  input { display: block; margin: 10px 0; padding: 8px; width: 300px; }
+  button { padding: 8px 15px; cursor: pointer; }
+  #login-error { color: red; margin-top: 10px; }
+</style>
 </head>
 <body>
+<h1>Admin Login</h1>
 
-<h2>Admin Login</h2>
+<input type="email" id="email" placeholder="ईमेल">
+<input type="password" id="password" placeholder="पासवर्ड">
+<button id="login-btn">Login</button>
+<p id="login-error"></p>
 
-<input type="email" id="email" placeholder="Email"><br><br>
-<input type="password" id="password" placeholder="Password"><br><br>
-
-<button onclick="login()">Login</button>
-
-<script>
-  const firebaseConfig = {
-    apiKey: "YOUR_API_KEY",
-    authDomain: "chhabalal-31cea.firebaseapp.com",
-    projectId: "chhabalal-31cea"
-  };
-
-  firebase.initializeApp(firebaseConfig);
-
-  function login() {
-    const email = document.getElementById("email").value;
-    const pass  = document.getElementById("password").value;
-
-    firebase.auth().signInWithEmailAndPassword(email, pass)
-      .then(() => {
-        alert("✅ Login Successful");
-        window.location.href = "admin.html";
-      })
-      .catch(err => alert(err.message));
-  }
-</script>
-
+<!-- Firebase scripts -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="firebase-app.js"></script>  <!-- Firebase config -->
+<script src="admin.js"></script>         <!-- Login logic -->
 </body>
 </html>
