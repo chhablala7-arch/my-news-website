@@ -5,55 +5,95 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Admin Login</title>
 <style>
-  body { font-family: Arial, sans-serif; padding: 20px; }
-  input { display: block; margin: 10px 0; padding: 12px; width: 90%; max-width: 350px; font-size: 16px; }
-  button { padding: 12px 20px; font-size: 16px; cursor: pointer; width: 90%; max-width: 350px; }
-  #login-error { color: red; margin-top: 10px; font-size: 14px; }
+body { font-family: Arial; padding: 20px; background:#f2f2f2; display:flex; justify-content:center; align-items:center; min-height:100vh; }
+.card { background:#fff; padding:25px; width:90%; max-width:350px; border-radius:12px; box-shadow:0 8px 25px rgba(0,0,0,.2); text-align:center; }
+input { width:90%; padding:12px; margin:10px 0; font-size:16px; border-radius:8px; border:1px solid #ccc; }
+button { width:90%; padding:12px; margin:8px 0; border:none; border-radius:8px; font-size:16px; cursor:pointer; background:linear-gradient(135deg,#667eea,#764ba2); color:#fff; }
+button:hover { opacity:0.9; }
+#login-error { color:red; font-size:14px; min-height:18px; margin-top:5px; }
+.showhide { cursor:pointer; font-size:14px; color:#667eea; position:absolute; right:20px; top:50%; transform:translateY(-50%); user-select:none; }
+.forgot { cursor:pointer; color:#db4437; font-size:14px; text-decoration:underline; display:block; margin-top:5px; }
+#dashboard{display:none;}
+.user{margin-top:10px;font-size:15px;}
 </style>
 </head>
 <body>
 
-<h1>Admin Login</h1>
+<!-- LOGIN BOX -->
+<div class="card" id="loginBox">
+  <h2>Login / Signup</h2>
+  <div style="position:relative;"><input type="email" id="email" placeholder="Email"></div>
+  <div style="position:relative;">
+    <input type="password" id="password" placeholder="Password">
+    <span class="showhide" onclick="togglePassword()">Show</span>
+  </div>
 
-<input type="email" id="email" placeholder="ईमेल">
-<input type="password" id="password" placeholder="पासवर्ड">
-<button id="login-btn">Login</button>
-<p id="login-error"></p>
+  <button onclick="signup()">Sign Up</button>
+  <button onclick="login()">Login</button>
+  <span class="forgot" onclick="resetPassword()">Forgot Password?</span>
+  <div id="login-error"></div>
+</div>
 
-<!-- Firebase scripts (defer ensures mobile DOM ready) -->
+<!-- DASHBOARD -->
+<div class="card" id="dashboard">
+  <h2>Dashboard</h2>
+  <div class="user" id="userInfo"></div>
+  <button onclick="logout()">Logout</button>
+</div>
+
+<!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js" defer></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js" defer></script>
 <script src="firebase-app.js" defer></script>
 
 <script defer>
-document.addEventListener("DOMContentLoaded", function() {
-    const auth = firebase.auth();
-    const btn = document.getElementById("login-btn");
+const auth = firebase.auth();
+const msg = document.getElementById("login-error");
+const passwordInput = document.getElementById("password");
 
-    // Mobile click test
-    btn.addEventListener("click", () => {
-        const email = document.getElementById("email").value.trim();
-        const password = document.getElementById("password").value;
+function signup(){
+  msg.innerHTML="";
+  auth.createUserWithEmailAndPassword(email.value,password.value)
+  .then(()=> { msg.style.color="green"; msg.innerHTML="Signup successful! You can login now."})
+  .catch(e=> { msg.style.color="red"; msg.innerHTML=e.message });
+}
 
-        if (!email || !password) {
-            document.getElementById("login-error").innerText = "ईमेल और पासवर्ड डालें।";
-            return;
-        }
+function login(){
+  msg.innerHTML="";
+  auth.signInWithEmailAndPassword(email.value,password.value)
+  .then(()=> { msg.style.color="green"; msg.innerHTML="Login successful!" })
+  .catch(e=> { msg.style.color="red"; msg.innerHTML=e.message });
+}
 
-        auth.signInWithEmailAndPassword(email, password)
-            .then(() => {
-                document.getElementById("login-error").innerText = "";
-                window.location.href = "admin-dashboard.html";
-            })
-            .catch(error => {
-                document.getElementById("login-error").innerText = error.message;
-            });
-    });
+function logout(){
+  auth.signOut();
+}
 
-    // Already logged in → redirect automatically
-    auth.onAuthStateChanged(user => {
-        if (user) window.location.href = "admin-dashboard.html";
-    });
+function togglePassword(){
+  passwordInput.type = passwordInput.type === "password" ? "text" : "password";
+}
+
+function resetPassword(){
+  if(email.value==="") {
+    msg.style.color="red";
+    msg.innerHTML="Enter your email to reset password";
+    return;
+  }
+  auth.sendPasswordResetEmail(email.value)
+  .then(()=> { msg.style.color="green"; msg.innerHTML="Password reset email sent!" })
+  .catch(e=> { msg.style.color="red"; msg.innerHTML=e.message });
+}
+
+// Auth state
+auth.onAuthStateChanged(user=>{
+  if(user){
+    loginBox.style.display="none";
+    dashboard.style.display="block";
+    userInfo.innerHTML = `<b>Email:</b> ${user.email}<br><b>UID:</b> ${user.uid}`;
+  }else{
+    loginBox.style.display="block";
+    dashboard.style.display="none";
+  }
 });
 </script>
 
