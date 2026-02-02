@@ -1,8 +1,8 @@
 const form = document.getElementById("news-form");
 const newsList = document.getElementById("news-list");
-const BASE_URL = "https://chhablala7-arch.github.io/my-news-website/"; // frontend only
+const BASE_URL = "https://chhablala7-arch.github.io/my-news-website/"; // For image display
 
-// 🔹 Load news
+// Load news from Firestore
 function renderNews() {
   newsList.innerHTML = "";
   db.collection("news").orderBy("date", "desc").get()
@@ -10,6 +10,7 @@ function renderNews() {
       snapshot.forEach(doc => {
         const data = doc.data();
         const div = document.createElement("div");
+
         const imageUrl = data.image ? `${BASE_URL}${data.image}` : "";
 
         div.innerHTML = `
@@ -25,18 +26,18 @@ function renderNews() {
     .catch(err => console.error("Load error:", err));
 }
 
-// 🔹 Delete news
+// Delete news
 function deleteNews(id) {
   db.collection("news").doc(id).delete().then(renderNews);
 }
 
-// 🔹 Add news
+// Add news
 form.addEventListener("submit", (e) => {
   e.preventDefault();
 
   const title = document.getElementById("news-title").value.trim();
-  const desc = document.getElementById("news-desc").value.trim();
-  const image = document.getElementById("news-image").value.trim(); // relative path only
+  const desc  = document.getElementById("news-desc").value.trim();
+  const image = document.getElementById("news-image").value.trim(); // relative path
 
   if (!title || !desc) {
     alert("Title और Description जरूरी है");
@@ -46,7 +47,7 @@ form.addEventListener("submit", (e) => {
   db.collection("news").add({
     title,
     description: desc,
-    image,
+    image,  // relative path
     date: firebase.firestore.FieldValue.serverTimestamp()
   })
   .then(() => {
@@ -60,5 +61,5 @@ form.addEventListener("submit", (e) => {
   });
 });
 
-// 🔹 Initial load
+// Initial load
 renderNews();
