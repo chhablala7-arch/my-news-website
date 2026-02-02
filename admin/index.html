@@ -1,40 +1,96 @@
 <!DOCTYPE html>
-<html lang="hi">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Panel - My News Website</title>
-  <style>
-    body { font-family: Arial, sans-serif; padding: 20px; }
-    input, textarea { width: 100%; margin-bottom: 10px; padding: 8px; }
-    button { padding: 10px 15px; cursor: pointer; }
-    img { max-width: 150px; display: block; margin: 8px 0; }
-    hr { margin: 15px 0; }
-  </style>
+  <title>Admin Panel</title>
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
 </head>
 <body>
 
-  <h1>Admin Panel</h1>
+<h2>Admin Panel</h2>
+<button onclick="logout()">Logout</button>
 
-  <form id="news-form">
-    <input type="text" id="news-title" placeholder="News Title" required>
-    <textarea id="news-desc" placeholder="News Description" rows="4" required></textarea>
-    <input type="text" id="news-image" placeholder="image/20260202_142752.jpg">
-    <button type="submit">Add News</button>
-  </form>
+<form id="news-form">
+  <input id="news-title" placeholder="Title"><br><br>
+  <textarea id="news-desc" placeholder="Description"></textarea><br><br>
+  <input id="news-image" placeholder="image/news1.jpg"><br><br>
+  <button type="submit">Add News</button>
+</form>
 
-  <h2>Existing News</h2>
-  <div id="news-list"></div>
+<hr>
+<div id="news-list"></div>
 
-  <!-- Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script>
+  const firebaseConfig = {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "chhabalal-31cea.firebaseapp.com",
+    projectId: "chhabalal-31cea"
+  };
 
-  <!-- Firebase Config -->
-  <script src="firebase-app.js"></script>
+  firebase.initializeApp(firebaseConfig);
 
-  <!-- Admin JS -->
-  <script src="admin.js"></script>
+  const db = firebase.firestore();
+  const form = document.getElementById("news-form");
+  const newsList = document.getElementById("news-list");
+  const BASE_URL = "https://chhablala7-arch.github.io/my-news-website/";
+
+  // 🔐 Auth check
+  firebase.auth().onAuthStateChanged(user => {
+    if (!user) {
+      alert("❌ Login required");
+      window.location.href = "login.html";
+    }
+  });
+
+  function logout() {
+    firebase.auth().signOut();
+  }
+
+  function renderNews() {
+    newsList.innerHTML = "";
+    db.collection("news").orderBy("date", "desc").get()
+      .then(snapshot => {
+        snapshot.forEach(doc => {
+          const d = doc.data();
+          const img = d.image ? `<img src="${BASE_URL}${d.image}" width="150">` : "";
+
+          newsList.innerHTML += `
+            <h3>${d.title}</h3>
+            ${img}
+            <p>${d.description}</p>
+            <button onclick="deleteNews('${doc.id}')">Delete</button>
+            <hr>
+          `;
+        });
+      });
+  }
+
+  function deleteNews(id) {
+    db.collection("news").doc(id).delete().then(renderNews);
+  }
+
+  form.addEventListener("submit", e => {
+    e.preventDefault();
+
+    db.collection("news").add({
+      title: news-title.value,
+      description: news-desc.value,
+      image: news-image.value,
+      date: firebase.firestore.FieldValue.serverTimestamp()
+    })
+    .then(() => {
+      form.reset();
+      renderNews();
+      alert("✅ News Added");
+    })
+    .catch(err => alert(err.message));
+  });
+
+  renderNews();
+</script>
 
 </body>
 </html>
