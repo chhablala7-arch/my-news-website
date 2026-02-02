@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin Panel - My News Website</title>
-
   <style>
     body { font-family: Arial, sans-serif; padding: 20px; }
     input, textarea { width: 100%; margin-bottom: 10px; padding: 8px; }
@@ -17,11 +16,9 @@
 
   <h1>Admin Panel</h1>
 
-  <!-- 🔹 Add News Form -->
   <form id="news-form">
     <input type="text" id="news-title" placeholder="News Title" required>
     <textarea id="news-desc" placeholder="News Description" rows="4" required></textarea>
-    <!-- Image relative path only -->
     <input type="text" id="news-image" placeholder="image/20260202_142752.jpg">
     <button type="submit">Add News</button>
   </form>
@@ -33,79 +30,11 @@
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 
-  <!-- 🔹 Firebase Config -->
+  <!-- Firebase Config -->
   <script src="firebase-app.js"></script>
 
-  <!-- 🔹 Admin JS -->
-  <script>
-    const form = document.getElementById("news-form");
-    const newsList = document.getElementById("news-list");
-    const BASE_URL = "https://chhablala7-arch.github.io/my-news-website/"; // For frontend image display
-
-    // Load news
-    function renderNews() {
-      newsList.innerHTML = "";
-      db.collection("news")
-        .orderBy("date", "desc")
-        .get()
-        .then(snapshot => {
-          snapshot.forEach(doc => {
-            const data = doc.data();
-            const div = document.createElement("div");
-
-            const imageUrl = data.image ? `${BASE_URL}${data.image}` : "";
-
-            div.innerHTML = `
-              <h3>${data.title}</h3>
-              ${imageUrl ? `<img src="${imageUrl}" alt="News Image">` : ""}
-              <p>${data.description}</p>
-              <button onclick="deleteNews('${doc.id}')">Delete</button>
-              <hr>
-            `;
-            newsList.appendChild(div);
-          });
-        })
-        .catch(err => console.error("Load error:", err));
-    }
-
-    // Delete news
-    function deleteNews(id) {
-      db.collection("news").doc(id).delete().then(renderNews);
-    }
-
-    // Add news
-    form.addEventListener("submit", (e) => {
-      e.preventDefault();
-
-      const title = document.getElementById("news-title").value.trim();
-      const desc  = document.getElementById("news-desc").value.trim();
-      const image = document.getElementById("news-image").value.trim(); // relative path
-
-      if (!title || !desc) {
-        alert("Title और Description जरूरी है");
-        return;
-      }
-
-      db.collection("news").add({
-        title: title,
-        description: desc,
-        image: image, // relative path
-        date: firebase.firestore.FieldValue.serverTimestamp()
-      })
-      .then(() => {
-        form.reset();
-        renderNews();
-        alert("✅ News added successfully");
-      })
-      .catch(err => {
-        console.error("Add error:", err);
-        alert("❌ News add नहीं हुई, console देखें");
-      });
-    });
-
-    // Initial load
-    renderNews();
-  </script>
+  <!-- Admin JS -->
+  <script src="admin.js"></script>
 
 </body>
 </html>
