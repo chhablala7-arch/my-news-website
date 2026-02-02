@@ -1,29 +1,27 @@
 <!DOCTYPE html>
-<html lang="hi">
+<html>
 <head>
-<meta charset="UTF-8">
-<title>Admin Panel</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Dashboard</title>
 </head>
 <body>
 
-<h2>🛠️ Admin Panel</h2>
+<h1>Admin Dashboard</h1>
+<p>आप लॉगिन हो चुके हैं</p>
+<button onclick="logout()">Logout</button>
 
-<div id="loginBox">
-  <input id="email" placeholder="Email">
-  <input id="password" type="password" placeholder="Password">
-  <button onclick="login()">Login</button>
-</div>
-
-<div id="newsBox" style="display:none;">
-  <input id="title" placeholder="Title">
-  <textarea id="desc" placeholder="Description"></textarea>
-  <input id="image" placeholder="Image URL">
-  <button onclick="addNews()">Add News</button>
-</div>
-
-<!-- ⚠️ SAME FOLDER FILES -->
 <script src="firebase.js"></script>
-<script src="admin.js"></script>
+<script>
+auth.onAuthStateChanged(user=>{
+  if(!user) window.location.href="login.html";
+});
+
+function logout(){
+  auth.signOut().then(()=>{
+    window.location.href="login.html";
+  });
+}
+</script>
 
 </body>
 </html>
