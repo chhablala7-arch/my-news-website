@@ -5,71 +5,49 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Admin Dashboard</title>
 <style>
-body { font-family: Arial; background: #f4f4f4; padding: 20px; }
-input, textarea, button { width: 100%; padding: 10px; margin: 8px 0; font-size: 16px; }
-button { background: #667eea; color: #fff; border: none; border-radius: 6px; cursor: pointer; }
-button:hover { opacity: 0.9; }
-.msg { margin-top: 10px; color: green; min-height: 18px; }
-.news { border-bottom: 1px solid #ccc; padding: 8px; margin-bottom: 10px; }
-.del { background: #e74c3c; color: #fff; border: none; padding: 5px 10px; cursor: pointer; border-radius: 5px; }
+body{font-family:Arial;background:#f4f4f4;padding:20px;}
+input,textarea,button{width:100%;padding:10px;margin:8px 0;font-size:16px;}
+button{background:#667eea;color:#fff;border:none;border-radius:6px;cursor:pointer;}
+button:hover{opacity:0.9;}
+.msg{margin-top:10px;color:green;min-height:18px;}
+.news{border-bottom:1px solid #ccc;padding:8px;margin-bottom:10px;}
+.del{background:#e74c3c;color:#fff;border:none;padding:5px 10px;cursor:pointer;border-radius:5px;}
 </style>
 </head>
 <body>
 
 <h2>Admin Dashboard</h2>
 
-<!-- Add News Form -->
+<!-- Add News -->
 <div>
-  <input type="text" id="title" placeholder="News Title">
-  <textarea id="desc" placeholder="News Description"></textarea>
-  <button onclick="addNews()">Add News</button>
-  <p id="msg"></p>
+<input type="text" id="title" placeholder="News Title">
+<textarea id="desc" placeholder="News Description"></textarea>
+<button onclick="addNews()">Add News</button>
+<p class="msg" id="msg"></p>
 </div>
 
 <!-- News List -->
 <h3>All News</h3>
 <div id="newsList"></div>
 
-<!-- Logout -->
 <button onclick="logout()">Logout</button>
 
-<!-- Firebase -->
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-
+<script src="firebase.js"></script>
 <script>
-// Firebase Config
-const firebaseConfig = {
-  apiKey: "AIzaSyD8syqOEEwNxsEUb8tIPL5BFWnBhgsGJg8",
-  authDomain: "chhablal-login.firebaseapp.com",
-  projectId: "chhablal-login",
-  storageBucket: "chhablal-login.appspot.com",
-  messagingSenderId: "234736579008",
-  appId: "1:234736579008:web:04caf7443e035ad0e21825"
-};
-
-// Initialize Firebase
-if(!firebase.apps.length){
-  firebase.initializeApp(firebaseConfig);
-}
-const auth = firebase.auth();
-const db = firebase.firestore();
-
-// Protect admin (only logged in users)
-auth.onAuthStateChanged(user => {
-  if(!user) window.location.href = "login.html";
+// Protect Admin
+auth.onAuthStateChanged(user=>{
+  if(!user) window.location.href="login.html";
 });
 
-// Add news function
+// Add News
 function addNews(){
   const title = document.getElementById("title").value.trim();
   const desc = document.getElementById("desc").value.trim();
   const msg = document.getElementById("msg");
 
   if(!title || !desc){
-    msg.style.color = "red";
-    msg.innerText = "Title और Description दोनों जरूरी हैं";
+    msg.style.color="red";
+    msg.innerText="Title और Description दोनों जरूरी हैं";
     return;
   }
 
@@ -79,23 +57,23 @@ function addNews(){
     image: "", // No image
     date: firebase.firestore.FieldValue.serverTimestamp()
   }).then(()=>{
-    msg.style.color = "green";
-    msg.innerText = "✅ News Added Successfully";
-    document.getElementById("title").value = "";
-    document.getElementById("desc").value = "";
+    msg.style.color="green";
+    msg.innerText="✅ News Added Successfully";
+    document.getElementById("title").value="";
+    document.getElementById("desc").value="";
   }).catch(e=>{
-    msg.style.color = "red";
-    msg.innerText = e.message;
+    msg.style.color="red";
+    msg.innerText=e.message;
   });
 }
 
 // Load all news
 function loadNews(){
   db.collection("news").orderBy("date","desc")
-  .onSnapshot(snapshot => {
+  .onSnapshot(snapshot=>{
     const newsList = document.getElementById("newsList");
-    newsList.innerHTML = "";
-    snapshot.forEach(doc => {
+    newsList.innerHTML="";
+    snapshot.forEach(doc=>{
       const d = doc.data();
       newsList.innerHTML += `
       <div class="news">
@@ -107,7 +85,7 @@ function loadNews(){
   });
 }
 
-// Delete news
+// Delete News
 function deleteNews(id){
   db.collection("news").doc(id).delete();
 }
