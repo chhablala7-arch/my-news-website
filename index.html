@@ -1,25 +1,44 @@
 <!DOCTYPE html>
 <html lang="hi">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="सही समय की न्यूज़ पढ़ें हमारी न्यूज़ वेबसाइट पर">
-  <title>मेरी न्यूज़ वेबसाइट</title>
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>मेरी न्यूज़ वेबसाइट</title>
+<style>
+  body { font-family: Arial, sans-serif; padding: 20px; }
+  img { max-width: 200px; display: block; margin: 8px 0; }
+  hr { margin: 15px 0; }
+</style>
 </head>
 <body>
-  <header>
-    <h1>मेरी न्यूज़ वेबसाइट</h1>
-  </header>
+<h1>मेरी न्यूज़ वेबसाइट</h1>
+<div id="news-container"></div>
 
-  <main id="news-container">
-    <!-- News Articles will appear here -->
-  </main>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="firebase-app.js"></script>
 
-  <footer>
-    <p>© 2026 मेरी न्यूज़ वेबसाइट</p>
-  </footer>
+<script>
+const container = document.getElementById("news-container");
+const BASE_URL = "https://chhablala7-arch.github.io/my-news-website/";
 
-  <script src="firebase-app.js"></script>
+function loadNews() {
+  container.innerHTML = "";
+  db.collection("news").orderBy("date", "desc").get()
+    .then(snapshot => {
+      snapshot.forEach(doc => {
+        const data = doc.data();
+        const imageUrl = data.image ? `${BASE_URL}${data.image}` : "";
+        container.innerHTML += `
+          <h3>${data.title}</h3>
+          ${imageUrl ? `<img src="${imageUrl}" alt="News Image">` : ""}
+          <p>${data.description}</p>
+          <hr>
+        `;
+      });
+    });
+}
+loadNews();
+</script>
 </body>
 </html>
