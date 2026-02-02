@@ -1,162 +1,46 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8">
-<title>Admin Login</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+<title>Admin Login</title>
 <style>
-*{
-  box-sizing:border-box;
-}
-
-body{
-  margin:0;
-  padding:0;
-  font-family: Arial, sans-serif;
-  background: linear-gradient(135deg,#667eea,#764ba2);
-  min-height:100vh;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
-
-.card{
-  background:#fff;
-  width:90%;
-  max-width:380px;
-  padding:25px;
-  border-radius:14px;
-  box-shadow:0 15px 35px rgba(0,0,0,.25);
-}
-
-h2{
-  margin:0 0 15px;
-  text-align:center;
-}
-
-input{
-  width:100%;
-  padding:12px;
-  margin:10px 0;
-  border-radius:8px;
-  border:1px solid #ccc;
-  font-size:16px;
-}
-
-button{
-  width:100%;
-  padding:14px;
-  margin-top:10px;
-  border:none;
-  border-radius:8px;
-  font-size:16px;
-  cursor:pointer;
-  background:linear-gradient(135deg,#667eea,#764ba2);
-  color:#fff;
-  position:relative;
-  z-index:10;
-}
-
-button:active{
-  opacity:.9;
-}
-
-.msg{
-  margin-top:10px;
-  font-size:14px;
-  min-height:18px;
-  text-align:center;
-}
-
-.forgot{
-  display:block;
-  text-align:center;
-  margin-top:8px;
-  color:#d93025;
-  font-size:14px;
-  cursor:pointer;
-}
+body{font-family:Arial;background:#f2f2f2}
+.box{max-width:360px;margin:80px auto;background:#fff;padding:20px;border-radius:10px}
+input,button{width:100%;padding:12px;margin:8px 0}
+button{background:#667eea;color:#fff;border:none;border-radius:6px}
+.msg{color:red;text-align:center}
 </style>
 </head>
-
 <body>
 
-<div class="card">
-  <h2>Admin Login</h2>
-
-  <input type="email" id="email" placeholder="Email">
-  <input type="password" id="password" placeholder="Password">
-
-  <button id="signupBtn">Sign Up</button>
-  <button id="loginBtn">Login</button>
-
-  <span class="forgot" id="resetBtn">Forgot Password?</span>
-  <div class="msg" id="msg"></div>
+<div class="box">
+  <h2>Login / Signup</h2>
+  <input id="email" type="email" placeholder="Email">
+  <input id="password" type="password" placeholder="Password">
+  <button onclick="signup()">Sign Up</button>
+  <button onclick="login()">Login</button>
+  <p class="msg" id="msg"></p>
 </div>
 
-<!-- Firebase -->
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-
+<script src="firebase.js"></script>
 <script>
-const firebaseConfig = {
-  apiKey: "AIzaSyD8syqOEEwNxsEUb8tIPL5BFWnBhgsGJg8",
-  authDomain: "chhablal-login.firebaseapp.com",
-  projectId: "chhablal-login",
-  storageBucket: "chhablal-login.firebasestorage.app",
-  messagingSenderId: "234736579008",
-  appId: "1:234736579008:web:04caf7443e035ad0e21825"
-};
-
-firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
-
-const email = document.getElementById("email");
-const password = document.getElementById("password");
 const msg = document.getElementById("msg");
 
-document.getElementById("signupBtn").onclick = () => {
-  msg.innerText="";
-  auth.createUserWithEmailAndPassword(email.value, password.value)
-    .then(() => {
-      msg.style.color="green";
-      msg.innerText="Signup successful. Now login.";
-    })
-    .catch(e => {
-      msg.style.color="red";
-      msg.innerText=e.message;
-    });
-};
+function signup(){
+  auth.createUserWithEmailAndPassword(email.value,password.value)
+  .then(()=> msg.innerText="Signup successful")
+  .catch(e=> msg.innerText=e.message);
+}
 
-document.getElementById("loginBtn").onclick = () => {
-  msg.innerText="";
-  auth.signInWithEmailAndPassword(email.value, password.value)
-    .then(() => {
-      window.location.href = "admin.html";
-    })
-    .catch(e => {
-      msg.style.color="red";
-      msg.innerText=e.message;
-    });
-};
+function login(){
+  auth.signInWithEmailAndPassword(email.value,password.value)
+  .then(()=> window.location.href="admin.html")
+  .catch(e=> msg.innerText=e.message);
+}
 
-document.getElementById("resetBtn").onclick = () => {
-  if(!email.value){
-    msg.style.color="red";
-    msg.innerText="Email डालो";
-    return;
-  }
-  auth.sendPasswordResetEmail(email.value)
-    .then(()=>{
-      msg.style.color="green";
-      msg.innerText="Reset email भेज दिया गया";
-    })
-    .catch(e=>{
-      msg.style.color="red";
-      msg.innerText=e.message;
-    });
-};
+auth.onAuthStateChanged(user=>{
+  if(user) window.location.href="admin.html";
+});
 </script>
 
 </body>
