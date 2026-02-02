@@ -1,13 +1,21 @@
-// Firebase SDK (compat is already loaded in HTML)
-const firebaseConfig = {
-  apiKey: "AIzaSyCyQqYtGm-cc6cTB8wxG3oVun3tAfic",
-  authDomain: "chhabalal-31cea.firebaseapp.com",
-  projectId: "chhabalal-31cea",
-  storageBucket: "chhabalal-31cea.firebasestorage.app",
-  messagingSenderId: "473513653439",
-  appId: "1:473513653439:web:cdd2acdbe40fae65fdc20a"
-};
+<!-- Firebase v8 SDKs -->
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
 
-// Initialize Firebase
-firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();  // 🔹 must have for admin.js
+<script>
+  var firebaseConfig = {
+    apiKey: "AIzaSyD8syqOEEwNxsEUb8tIPL5BFWnBhgsGJg8",
+    authDomain: "chhablal-login.firebaseapp.com",
+    projectId: "chhablal-login",
+    storageBucket: "chhablal-login.firebasestorage.app",
+    messagingSenderId: "234736579008",
+    appId: "1:234736579008:web:04caf7443e035ad0e21825"
+  };
+
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+
+  var auth = firebase.auth();
+  var db = firebase.firestore();
+</script>
