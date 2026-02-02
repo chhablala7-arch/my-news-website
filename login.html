@@ -1,61 +1,98 @@
 <!DOCTYPE html>
-<html lang="hi">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Admin Login</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-body {
+*{
+  box-sizing:border-box;
+}
+
+body{
+  margin:0;
+  padding:0;
   font-family: Arial, sans-serif;
-  background: #f4f4f4;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
+  background: linear-gradient(135deg,#667eea,#764ba2);
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
 }
 
-.box {
-  background: #fff;
-  padding: 20px;
-  width: 100%;
-  max-width: 350px;
-  border-radius: 10px;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+.card{
+  background:#fff;
+  width:90%;
+  max-width:380px;
+  padding:25px;
+  border-radius:14px;
+  box-shadow:0 15px 35px rgba(0,0,0,.25);
 }
 
-input, button {
-  width: 100%;
-  padding: 10px;
-  margin-top: 10px;
+h2{
+  margin:0 0 15px;
+  text-align:center;
 }
 
-button {
-  background: #6c63ff;
-  color: #fff;
-  border: none;
-  font-size: 16px;
-  cursor: pointer;
+input{
+  width:100%;
+  padding:12px;
+  margin:10px 0;
+  border-radius:8px;
+  border:1px solid #ccc;
+  font-size:16px;
 }
 
-#error {
-  color: red;
-  margin-top: 10px;
+button{
+  width:100%;
+  padding:14px;
+  margin-top:10px;
+  border:none;
+  border-radius:8px;
+  font-size:16px;
+  cursor:pointer;
+  background:linear-gradient(135deg,#667eea,#764ba2);
+  color:#fff;
+  position:relative;
+  z-index:10;
+}
+
+button:active{
+  opacity:.9;
+}
+
+.msg{
+  margin-top:10px;
+  font-size:14px;
+  min-height:18px;
+  text-align:center;
+}
+
+.forgot{
+  display:block;
+  text-align:center;
+  margin-top:8px;
+  color:#d93025;
+  font-size:14px;
+  cursor:pointer;
 }
 </style>
 </head>
 
 <body>
 
-<div class="box">
+<div class="card">
   <h2>Admin Login</h2>
 
   <input type="email" id="email" placeholder="Email">
   <input type="password" id="password" placeholder="Password">
 
+  <button id="signupBtn">Sign Up</button>
   <button id="loginBtn">Login</button>
 
-  <p id="error"></p>
+  <span class="forgot" id="resetBtn">Forgot Password?</span>
+  <div class="msg" id="msg"></div>
 </div>
 
 <!-- Firebase -->
@@ -63,12 +100,11 @@ button {
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 
 <script>
-/* 🔥 Firebase Config */
 const firebaseConfig = {
   apiKey: "AIzaSyD8syqOEEwNxsEUb8tIPL5BFWnBhgsGJg8",
   authDomain: "chhablal-login.firebaseapp.com",
   projectId: "chhablal-login",
-  storageBucket: "chhablal-login.appspot.com",
+  storageBucket: "chhablal-login.firebasestorage.app",
   messagingSenderId: "234736579008",
   appId: "1:234736579008:web:04caf7443e035ad0e21825"
 };
@@ -76,25 +112,51 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 
-/* ✅ Button Click Working */
-document.getElementById("loginBtn").addEventListener("click", () => {
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
+const email = document.getElementById("email");
+const password = document.getElementById("password");
+const msg = document.getElementById("msg");
 
-  if (!email || !password) {
-    document.getElementById("error").innerText = "Email और Password डालो";
+document.getElementById("signupBtn").onclick = () => {
+  msg.innerText="";
+  auth.createUserWithEmailAndPassword(email.value, password.value)
+    .then(() => {
+      msg.style.color="green";
+      msg.innerText="Signup successful. Now login.";
+    })
+    .catch(e => {
+      msg.style.color="red";
+      msg.innerText=e.message;
+    });
+};
+
+document.getElementById("loginBtn").onclick = () => {
+  msg.innerText="";
+  auth.signInWithEmailAndPassword(email.value, password.value)
+    .then(() => {
+      window.location.href = "admin.html";
+    })
+    .catch(e => {
+      msg.style.color="red";
+      msg.innerText=e.message;
+    });
+};
+
+document.getElementById("resetBtn").onclick = () => {
+  if(!email.value){
+    msg.style.color="red";
+    msg.innerText="Email डालो";
     return;
   }
-
-  auth.signInWithEmailAndPassword(email, password)
-    .then(() => {
-      alert("Login Success ✅");
-      window.location.href = "admin-dashboard.html";
+  auth.sendPasswordResetEmail(email.value)
+    .then(()=>{
+      msg.style.color="green";
+      msg.innerText="Reset email भेज दिया गया";
     })
-    .catch(err => {
-      document.getElementById("error").innerText = err.message;
+    .catch(e=>{
+      msg.style.color="red";
+      msg.innerText=e.message;
     });
-});
+};
 </script>
 
 </body>
