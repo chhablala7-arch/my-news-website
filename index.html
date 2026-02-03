@@ -1,64 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>News Home</title>
+
+<style>
+body { font-family: Arial; background:#f9f9f9; margin:0; padding:15px; }
+h1 { text-align:center; color:#333; }
+
+.news-item {
+  background:#fff;
+  padding:15px;
+  margin:15px auto;
+  border-radius:8px;
+  max-width:600px;
+  box-shadow:0 0 10px rgba(0,0,0,0.1);
+}
+.news-item h3 { margin:0 0 10px; }
+.news-item p { margin:0; }
+
+.pop-btn{
+  margin-top:10px;
+  padding:8px 15px;
+  background:#007bff;
+  color:#fff;
+  border:none;
+  border-radius:5px;
+  cursor:pointer;
+}
+
+#ad-banner, .inline-banner, #extra-ad {
+  text-align:center;
+  margin:20px 0;
+}
+
+#native-ad{
+  max-width:600px;
+  margin:20px auto;
+}
+
+/* Desktop पर native hide */
+@media (min-width:768px){
+  #native-ad{ display:none; }
+}
+</style>
+</head>
+
+<body>
+
+<h1>Latest News</h1>
+
+<!-- ✅ Native Ad (Mobile Only) -->
+<div id="native-ad"></div>
+<script async data-cfasync="false"
+src="https://pl28637177.effectivegatecpm.com/fad14f1164a018aa8db8e8eb354764ac/invoke.js">
+</script>
+
+<!-- ✅ Top Banner -->
+<div id="ad-banner"></div>
+<script>
+window.atOptions = {
+  'key' : '156a5ae4a4cc8e1506a2cc3b96c9b641',
+  'format' : 'iframe',
+  'height' : 250,
+  'width' : 300,
+  'params' : {}
+};
+</script>
+<script src="https://www.highperformanceformat.com/156a5ae4a4cc8e1506a2cc3b96c9b641/invoke.js"></script>
+
+<!-- ✅ Extra Ad Script -->
+<div id="extra-ad"></div>
+<script src="https://pl28638101.effectivegatecpm.com/86/dc/61/86dc615d03616505d0012f407e25655d.js" async></script>
+
+<!-- ✅ News List -->
 <div id="newsList"></div>
 
 <script type="module">
 import { db } from "./firebase.js";
-import { collection, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+import { collection, getDocs, query, orderBy } from
+"https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
 const newsList = document.getElementById("newsList");
 
-async function loadNews() {
-  newsList.innerHTML = '';
-  const q = query(collection(db, "news"), orderBy("createdAt","desc"));
+async function loadNews(){
+  newsList.innerHTML = "";
+  const q = query(collection(db,"news"), orderBy("createdAt","desc"));
   const snapshot = await getDocs(q);
 
   let count = 0;
-  let inlineBannerCount = 0;
+  let bannerCount = 0;
 
-  snapshot.forEach(docSnap => {
+  snapshot.forEach(docSnap=>{
     const data = docSnap.data();
-    const div = document.createElement("div");
-    div.classList.add("news-item");
 
-    // News content
+    const div = document.createElement("div");
+    div.className = "news-item";
     div.innerHTML = `<h3>${data.title}</h3><p>${data.content}</p>`;
 
-    // Popunder button after each news item
-    const popBtn = document.createElement("button");
-    popBtn.textContent = "Click here to view full news";
-    popBtn.style.marginTop = "10px";
-    popBtn.style.padding = "8px 15px";
-    popBtn.style.background = "#007bff";
-    popBtn.style.color = "#fff";
-    popBtn.style.border = "none";
-    popBtn.style.borderRadius = "5px";
-    popBtn.style.cursor = "pointer";
+    /* 🔥 Popunder button (news के नीचे) */
+    const btn = document.createElement("button");
+    btn.className = "pop-btn";
+    btn.innerText = "पूरी खबर पढ़ें";
+    btn.onclick = ()=>{
+      window.open("https://YOUR-POPUNDER-URL","_blank");
+    };
 
-    popBtn.addEventListener("click", function() {
-        window.open(
-            "https://your-popunder-ad-url.com", // Replace with your popunder URL
-            "_blank",
-            "width=1,height=1,scrollbars=no,menubar=no,status=no,toolbar=no"
-        );
-    });
-
-    div.appendChild(popBtn);
-
+    div.appendChild(btn);
     newsList.appendChild(div);
     count++;
 
-    // Insert inline banner every 5 news items
-    if(count % 5 === 0) {
-      inlineBannerCount++;
-      const bannerDiv = document.createElement('div');
-      bannerDiv.classList.add('inline-banner');
-      bannerDiv.id = 'inline-banner-' + inlineBannerCount;
-      newsList.appendChild(bannerDiv);
+    /* ✅ Inline Banner हर 5 news के बाद */
+    if(count % 5 === 0){
+      bannerCount++;
+      const b = document.createElement("div");
+      b.className = "inline-banner";
+      newsList.appendChild(b);
 
-      // Load banner for this container
-      loadBanner('inline-banner-' + inlineBannerCount);
+      const s = document.createElement("script");
+      s.src = "https://www.highperformanceformat.com/156a5ae4a4cc8e1506a2cc3b96c9b641/invoke.js";
+      s.async = true;
+      b.appendChild(s);
     }
   });
 }
 
 loadNews();
 </script>
+
+</body>
+</html>
