@@ -1,71 +1,49 @@
 import { auth, db } from "./firebase.js";
-import { onAuthStateChanged, signOut } from
-"https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+import { collection, addDoc, getDocs, deleteDoc, doc, query, orderBy } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
-import {
-  collection, addDoc, getDocs,
-  deleteDoc, doc, updateDoc
-} from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+const newsForm = document.getElementById("newsForm");
+const newsList = document.getElementById("newsList");
+const logoutBtn = document.getElementById("logoutBtn");
 
-let editId = null;
+// Logout
+logoutBtn.addEventListener("click", () => {
+  signOut(auth).then(() => window.location.href="login.html");
+});
 
-// 🔐 Protect admin
-onAuthStateChanged(auth, (user) => {
-  if (!user) location.href = "login.html";
+// Auth check
+onAuthStateChanged(auth, async (user) => {
+  if(!user) window.location.href="login.html";
   else loadNews();
 });
 
-// 🚪 Logout
-window.logout = function () {
-  signOut(auth).then(() => location.href = "login.html");
-};
-
-// 💾 Save / Update News
-window.saveNews = async function () {
-  const title = document.getElementById("title").value;
-  const content = document.getElementById("content").value;
-
-  if (!title || !content) return alert("सब भरें");
-
-  if (editId) {
-    await updateDoc(doc(db, "news", editId), { title, content });
-    editId = null;
-  } else {
-    await addDoc(collection(db, "news"), { title, content });
-  }
-
-  document.getElementById("title").value = "";
-  document.getElementById("content").value = "";
-  loadNews();
-};
-
-// 📄 Load News
+// Load news
 async function loadNews() {
-  const list = document.getElementById("newsList");
-  list.innerHTML = "";
-
-  const snap = await getDocs(collection(db, "news"));
-  snap.forEach(docu => {
-    const d = docu.data();
-    list.innerHTML += `
-      <div>
-        <h4>${d.title}</h4>
-        <p>${d.content}</p>
-        <button onclick="editNews('${docu.id}','${d.title}','${d.content}')">Edit</button>
-        <button onclick="deleteNews('${docu.id}')">Delete</button>
-      </div><hr>`;
+  newsList.innerHTML = '';
+  const q = query(collection(db,"news"), orderBy("createdAt","desc"));
+  const snapshot = await getDocs(q);
+  snapshot.forEach(docSnap=>{
+    const data = docSnap.data();
+    const div = document.createElement("div");
+    div.classList.add("news-item");
+    div.innerHTML = `<h4>${data.title}</h4><p>${data.content}</p>
+      <button onclick="deleteNews('${docSnap.id}')">Delete</button>`;
+    newsList.appendChild(div);
   });
 }
 
-// ✏️ Edit
-window.editNews = function (id, t, c) {
-  editId = id;
-  document.getElementById("title").value = t;
-  document.getElementById("content").value = c;
-};
-
-// 🗑 Delete
-window.deleteNews = async function (id) {
-  await deleteDoc(doc(db, "news", id));
+// Add news
+newsForm.addEventListener("submit", async (e)=>{
+  e.preventDefault();
+  const title = document.getElementById("newsTitle").value;
+  const content = document.getElementById("newsContent").value;
+  await addDoc(collection(db,"news"), {title, content, createdAt: new Date()});
+  newsForm.reset();
   loadNews();
-};
+});
+
+// Delete news
+window.deleteNews = async (id)=>{
+  await deleteDoc(doc(db,"news",id));
+  loadNews();
+}
