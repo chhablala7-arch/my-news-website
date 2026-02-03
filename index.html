@@ -1,108 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>News Home</title>
-
-<style>
-body { font-family: Arial; background: #f9f9f9; margin: 0; padding: 20px; }
-h1 { text-align: center; color: #333; }
-.news-item { background: white; padding: 15px; margin: 15px auto; border-radius: 8px; max-width: 600px; box-shadow: 0 0 10px rgba(0,0,0,0.1);}
-.news-item h3 { margin: 0 0 10px 0; }
-.news-item p { margin: 0; }
-#adminLogin { display: block; text-align: center; margin: 20px; font-size: 18px; text-decoration: none; color: #007bff; }
-#adminLogin:hover { text-decoration: underline; }
-#ad-banner, .inline-banner, #extra-ad { text-align: center; margin: 20px 0; }
-#native-ad { max-width: 600px; margin: 20px auto; overflow: hidden; }
-#native-ad img { max-height: 180px; object-fit: cover; }
-
-/* Mobile-only Native */
-@media (min-width: 768px) {
-  #native-ad { display: none; }
-}
-
-/* Popunder button */
-#popunder-btn {
-  display: block;
-  margin: 20px auto;
-  padding: 12px 20px;
-  background: #007bff;
-  color: #fff;
-  border: none;
-  border-radius: 6px;
-  font-size: 16px;
-  cursor: pointer;
-}
-#popunder-btn:hover { background: #0056b3; }
-</style>
-</head>
-
-<body>
-
-<h1>Latest News</h1>
-
-<!-- Mobile-only Native Ad -->
-<div id="native-ad"></div>
-<script async data-cfasync="false"
-src="https://pl28637177.effectivegatecpm.com/fad14f1164a018aa8db8e8eb354764ac/invoke.js">
-</script>
-
-<!-- Top Banner Ad -->
-<div id="ad-banner"></div>
-<script>
-let bannerLoaded = false;
-
-function loadBanner(containerId) {
-  const s = document.createElement('script');
-  s.src = 'https://www.highperformanceformat.com/156a5ae4a4cc8e1506a2cc3b96c9b641/invoke.js';
-  s.async = true;
-  document.getElementById(containerId).appendChild(s);
-}
-
-window.atOptions = {
-  'key' : '156a5ae4a4cc8e1506a2cc3b96c9b641',
-  'format' : 'iframe',
-  'height' : 250,
-  'width' : 300,
-  'params' : {}
-};
-
-// Load top banner
-loadBanner('ad-banner');
-bannerLoaded = true;
-</script>
-
-<!-- Extra Ad Script -->
-<div id="extra-ad"></div>
-<script>
-const extraAdScript = document.createElement('script');
-extraAdScript.src = 'https://pl28638101.effectivegatecpm.com/86/dc/61/86dc615d03616505d0012f407e25655d.js';
-extraAdScript.async = true;
-document.getElementById('extra-ad').appendChild(extraAdScript);
-</script>
-
-<!-- Popunder Button -->
-<button id="popunder-btn">Click here to view full news</button>
-<script>
-document.getElementById('popunder-btn').addEventListener('click', function() {
-  window.open(
-    'https://your-popunder-ad-url.com', // Replace with your popunder ad URL
-    '_blank',
-    'width=1,height=1,scrollbars=no,menubar=no,status=no,toolbar=no'
-  );
-});
-</script>
-
-<!-- News List -->
 <div id="newsList"></div>
-
-<a href="login.html" id="adminLogin">Admin Login</a>
 
 <script type="module">
 import { db } from "./firebase.js";
-import { collection, getDocs, query, orderBy } from 
-"https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+import { collection, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
 const newsList = document.getElementById("newsList");
 
@@ -118,7 +18,31 @@ async function loadNews() {
     const data = docSnap.data();
     const div = document.createElement("div");
     div.classList.add("news-item");
+
+    // News content
     div.innerHTML = `<h3>${data.title}</h3><p>${data.content}</p>`;
+
+    // Popunder button after each news item
+    const popBtn = document.createElement("button");
+    popBtn.textContent = "Click here to view full news";
+    popBtn.style.marginTop = "10px";
+    popBtn.style.padding = "8px 15px";
+    popBtn.style.background = "#007bff";
+    popBtn.style.color = "#fff";
+    popBtn.style.border = "none";
+    popBtn.style.borderRadius = "5px";
+    popBtn.style.cursor = "pointer";
+
+    popBtn.addEventListener("click", function() {
+        window.open(
+            "https://your-popunder-ad-url.com", // Replace with your popunder URL
+            "_blank",
+            "width=1,height=1,scrollbars=no,menubar=no,status=no,toolbar=no"
+        );
+    });
+
+    div.appendChild(popBtn);
+
     newsList.appendChild(div);
     count++;
 
@@ -138,6 +62,3 @@ async function loadNews() {
 
 loadNews();
 </script>
-
-</body>
-</html>
