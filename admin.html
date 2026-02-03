@@ -1,25 +1,104 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Admin Panel</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel</title>
+  <style>
+    body { font-family: Arial; margin: 20px; background: #f9f9f9;}
+    h2 { color: #333; }
+    input, textarea { width: 100%; padding: 10px; margin: 5px 0; border-radius: 4px; border: 1px solid #ccc; }
+    button { padding: 10px 15px; border: none; border-radius: 4px; background: #28a745; color: white; cursor: pointer; margin: 5px 0; }
+    button:hover { background: #218838; }
+    .news-item { background: white; padding: 10px; margin: 10px 0; border-radius: 6px; box-shadow: 0 0 5px rgba(0,0,0,0.1);}
+    .news-item button { background: #dc3545; }
+    .news-item button:hover { background: #c82333; }
+    #logoutBtn { background: #007bff; margin-bottom: 20px;}
+    #logoutBtn:hover { background: #0056b3; }
+  </style>
 </head>
 <body>
 
-<h2>Admin Panel</h2>
-<button onclick="logout()">Logout</button>
+  <h2>Admin Panel</h2>
+  <button id="logoutBtn">Logout</button>
 
-<hr>
+  <form id="newsForm">
+    <input type="text" id="newsTitle" placeholder="News Title" required>
+    <textarea id="newsContent" placeholder="News Content" rows="4" required></textarea>
+    <button type="submit">Add News</button>
+  </form>
 
-<h3>Add / Edit News</h3>
-<input id="title" placeholder="News Title"><br><br>
-<textarea id="content" placeholder="News Content"></textarea><br><br>
-<button onclick="saveNews()">Save News</button>
+  <h3>All News</h3>
+  <div id="newsList"></div>
 
-<hr>
-<h3>All News</h3>
-<div id="newsList"></div>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+    import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
-<script type="module" src="admin.js"></script>
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_PROJECT.firebaseapp.com",
+      projectId: "YOUR_PROJECT",
+      storageBucket: "YOUR_PROJECT.appspot.com",
+      messagingSenderId: "XXXX",
+      appId: "XXXX"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    const newsForm = document.getElementById("newsForm");
+    const newsList = document.getElementById("newsList");
+    const logoutBtn = document.getElementById("logoutBtn");
+
+    // Logout
+    logoutBtn.addEventListener("click", () => {
+      signOut(auth).then(() => {
+        window.location.href = "index.html";
+      });
+    });
+
+    // Auth check
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        window.location.href = "index.html";
+        return;
+      }
+      // Load news
+      loadNews();
+    });
+
+    async function loadNews() {
+      newsList.innerHTML = '';
+      const querySnapshot = await getDocs(collection(db, "news"));
+      querySnapshot.forEach((docSnap) => {
+        const data = docSnap.data();
+        const div = document.createElement("div");
+        div.classList.add("news-item");
+        div.innerHTML = `
+          <h4>${data.title}</h4>
+          <p>${data.content}</p>
+          <button onclick="deleteNews('${docSnap.id}')">Delete</button>
+        `;
+        newsList.appendChild(div);
+      });
+    }
+
+    newsForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const title = document.getElementById("newsTitle").value;
+      const content = document.getElementById("newsContent").value;
+      await addDoc(collection(db, "news"), { title, content, createdAt: new Date() });
+      newsForm.reset();
+      loadNews();
+    });
+
+    window.deleteNews = async (id) => {
+      await deleteDoc(doc(db, "news", id));
+      loadNews();
+    }
+  </script>
 </body>
 </html>
