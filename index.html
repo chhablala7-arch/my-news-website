@@ -13,7 +13,7 @@ h1 { text-align: center; color: #333; }
 .news-item p { margin: 0; }
 #adminLogin { display: block; text-align: center; margin: 20px; font-size: 18px; text-decoration: none; color: #007bff; }
 #adminLogin:hover { text-decoration: underline; }
-#ad-banner { text-align: center; margin: 20px 0; }
+#ad-banner, .inline-banner { text-align: center; margin: 20px 0; }
 #native-ad {
   max-width: 600px; 
   margin: 20px auto; 
@@ -32,33 +32,35 @@ h1 { text-align: center; color: #333; }
 
 <h1>Latest News</h1>
 
-<!-- ✅ Native Ad (mobile only) -->
+<!-- Native Ad (mobile only) -->
 <div id="native-ad"></div>
 <script async data-cfasync="false"
 src="https://pl28637177.effectivegatecpm.com/fad14f1164a018aa8db8e8eb354764ac/invoke.js">
 </script>
 
-<!-- Banner container -->
+<!-- Top Banner Ad -->
 <div id="ad-banner"></div>
 <script>
 let bannerLoaded = false;
 
-function loadBannerAd() {
-  if(bannerLoaded) return;
-  bannerLoaded = true;
-
-  window.atOptions = {
-    'key' : '156a5ae4a4cc8e1506a2cc3b96c9b641',
-    'format' : 'iframe',
-    'height' : 250,
-    'width' : 300,
-    'params' : {}
-  };
-
+function loadBanner(containerId) {
   const s = document.createElement('script');
   s.src = 'https://www.highperformanceformat.com/156a5ae4a4cc8e1506a2cc3b96c9b641/invoke.js';
-  document.getElementById('ad-banner').appendChild(s);
+  s.async = true;
+  document.getElementById(containerId).appendChild(s);
 }
+
+window.atOptions = {
+  'key' : '156a5ae4a4cc8e1506a2cc3b96c9b641',
+  'format' : 'iframe',
+  'height' : 250,
+  'width' : 300,
+  'params' : {}
+};
+
+// Load top banner
+loadBanner('ad-banner');
+bannerLoaded = true;
 </script>
 
 <!-- News List -->
@@ -79,6 +81,8 @@ async function loadNews() {
   const snapshot = await getDocs(q);
 
   let count = 0;
+  let inlineBannerCount = 0;
+
   snapshot.forEach(docSnap => {
     const data = docSnap.data();
     const div = document.createElement("div");
@@ -89,18 +93,16 @@ async function loadNews() {
 
     // ✅ Insert banner after every 5 news items
     if(count % 5 === 0) {
+      inlineBannerCount++;
       const bannerDiv = document.createElement('div');
-      bannerDiv.id = 'inline-banner-'+count;
-      bannerDiv.style.textAlign = 'center';
+      bannerDiv.classList.add('inline-banner');
+      bannerDiv.id = 'inline-banner-' + inlineBannerCount;
       newsList.appendChild(bannerDiv);
 
-      // Load banner once
-      if(!bannerLoaded) loadBannerAd();
+      // Load banner script for this container
+      loadBanner('inline-banner-' + inlineBannerCount);
     }
   });
-
-  // ✅ Ensure banner on top also
-  loadBannerAd();
 }
 
 loadNews();
