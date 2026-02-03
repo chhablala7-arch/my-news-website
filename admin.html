@@ -1,53 +1,50 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <title>Admin Dashboard</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel</title>
 
-  <!-- Firebase -->
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
   <script src="firebase.js"></script>
-
-  <style>
-    body {
-      font-family: Arial;
-      background: #f5f5f5;
-      padding: 20px;
-    }
-    button {
-      padding: 10px 15px;
-      background: red;
-      color: #fff;
-      border: none;
-      cursor: pointer;
-    }
-  </style>
 </head>
 <body>
 
-  <h1>Welcome Admin</h1>
-  <p id="userEmail"></p>
+<h2>Add News</h2>
 
-  <button onclick="logout()">Logout</button>
+<input id="title" placeholder="News Title"><br><br>
+<textarea id="content" placeholder="News Content"></textarea><br><br>
 
-  <script>
-    firebase.auth().onAuthStateChanged((user) => {
-      if (user) {
-        document.getElementById("userEmail").innerText =
-          "Logged in as: " + user.email;
-      } else {
-        window.location.href = "login.html";
-      }
-    });
+<button onclick="addNews()">Add News</button>
+<button onclick="logout()">Logout</button>
 
-    function logout() {
-      firebase.auth().signOut().then(() => {
-        window.location.href = "login.html";
-      });
-    }
-  </script>
+<script>
+var db = firebase.firestore();
+
+firebase.auth().onAuthStateChanged(user => {
+  if (!user || user.email !== "admin@gmail.com") {
+    location.href = "login.html";
+  }
+});
+
+function addNews() {
+  db.collection("news").add({
+    title: title.value,
+    content: content.value,
+    time: firebase.firestore.FieldValue.serverTimestamp()
+  }).then(() => {
+    alert("News Added ✅");
+    title.value = "";
+    content.value = "";
+  });
+}
+
+function logout() {
+  firebase.auth().signOut().then(() => {
+    location.href = "login.html";
+  });
+}
+</script>
 
 </body>
 </html>
