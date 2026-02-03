@@ -1,27 +1,47 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>News</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>News Home</title>
+<style>
+body { font-family: Arial; background: #f9f9f9; margin: 0; padding: 20px; }
+h1 { text-align: center; color: #333; }
+.news-item { background: white; padding: 15px; margin: 15px auto; border-radius: 8px; max-width: 600px; box-shadow: 0 0 10px rgba(0,0,0,0.1);}
+.news-item h3 { margin: 0 0 10px 0; }
+.news-item p { margin: 0; }
+#adminLogin { display: block; text-align: center; margin: 20px; font-size: 18px; text-decoration: none; color: #007bff; }
+#adminLogin:hover { text-decoration: underline; }
+</style>
 </head>
 <body>
 
-<h2>Latest News</h2>
-<div id="news"></div>
+<h1>Latest News</h1>
+
+<div id="newsList"></div>
+
+<a href="login.html" id="adminLogin">Admin Login</a>
 
 <script type="module">
 import { db } from "./firebase.js";
-import { collection, getDocs } from
-"https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+import { collection, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
-const newsDiv = document.getElementById("news");
+const newsList = document.getElementById("newsList");
 
-const snap = await getDocs(collection(db,"news"));
-snap.forEach(d=>{
-  newsDiv.innerHTML += `
-    <h3>${d.data().title}</h3>
-    <p>${d.data().content}</p><hr>`;
-});
+async function loadNews() {
+  newsList.innerHTML = '';
+  const q = query(collection(db, "news"), orderBy("createdAt","desc"));
+  const snapshot = await getDocs(q);
+  snapshot.forEach(docSnap => {
+    const data = docSnap.data();
+    const div = document.createElement("div");
+    div.classList.add("news-item");
+    div.innerHTML = `<h3>${data.title}</h3><p>${data.content}</p>`;
+    newsList.appendChild(div);
+  });
+}
+
+loadNews();
 </script>
 
 </body>
