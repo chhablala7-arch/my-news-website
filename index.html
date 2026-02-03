@@ -2,41 +2,11 @@
 <html>
 <head>
   <title>My News Website</title>
-
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
-  <script src="firebase.js"></script>
-
-  <style>
-    body { font-family: Arial; padding: 20px; }
-    .news { border: 1px solid #ccc; padding: 10px; margin-bottom: 10px; }
-  </style>
 </head>
 <body>
+  <h1>📰 Welcome to My News Website</h1>
+  <p>यह page बिना login खुलेगा ✅</p>
 
-<h1>📰 Latest News</h1>
-<a href="login.html">Admin Login</a>
-
-<div id="newsList"></div>
-
-<script>
-var db = firebase.firestore();
-
-db.collection("news").orderBy("time", "desc")
-.onSnapshot((snapshot) => {
-  var html = "";
-  snapshot.forEach(doc => {
-    var n = doc.data();
-    html += `
-      <div class="news">
-        <h3>${n.title}</h3>
-        <p>${n.content}</p>
-      </div>
-    `;
-  });
-  document.getElementById("newsList").innerHTML = html;
-});
-</script>
-
+  <a href="login.html">Admin Login</a>
 </body>
 </html>
