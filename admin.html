@@ -1,49 +1,23 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Admin Panel</title>
-
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
-  <script src="firebase.js"></script>
+<title>Admin Panel</title>
 </head>
 <body>
 
-<h2>Add News</h2>
+<h2>Welcome Admin</h2>
+<p>यह page सिर्फ login के बाद खुलेगा</p>
 
-<input id="title" placeholder="News Title"><br><br>
-<textarea id="content" placeholder="News Content"></textarea><br><br>
+<script type="module">
+import { auth } from "./firebase.js";
+import { onAuthStateChanged } from
+"https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
 
-<button onclick="addNews()">Add News</button>
-<button onclick="logout()">Logout</button>
-
-<script>
-var db = firebase.firestore();
-
-firebase.auth().onAuthStateChanged(user => {
-  if (!user || user.email !== "admin@gmail.com") {
-    location.href = "login.html";
+onAuthStateChanged(auth, (user) => {
+  if (!user) {
+    window.location.href = "login.html";
   }
 });
-
-function addNews() {
-  db.collection("news").add({
-    title: title.value,
-    content: content.value,
-    time: firebase.firestore.FieldValue.serverTimestamp()
-  }).then(() => {
-    alert("News Added ✅");
-    title.value = "";
-    content.value = "";
-  });
-}
-
-function logout() {
-  firebase.auth().signOut().then(() => {
-    location.href = "login.html";
-  });
-}
 </script>
 
 </body>
