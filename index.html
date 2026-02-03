@@ -6,44 +6,24 @@
 <title>News Home</title>
 
 <style>
-body { 
-  font-family: Arial; 
-  background: #f9f9f9; 
-  margin: 0; 
-  padding: 20px; 
-}
-h1 { 
-  text-align: center; 
-  color: #333; 
-}
-.news-item { 
-  background: white; 
-  padding: 15px; 
-  margin: 15px auto; 
-  border-radius: 8px; 
+body { font-family: Arial; background: #f9f9f9; margin: 0; padding: 20px; }
+h1 { text-align: center; color: #333; }
+.news-item { background: white; padding: 15px; margin: 15px auto; border-radius: 8px; max-width: 600px; box-shadow: 0 0 10px rgba(0,0,0,0.1);}
+.news-item h3 { margin: 0 0 10px 0; }
+.news-item p { margin: 0; }
+#adminLogin { display: block; text-align: center; margin: 20px; font-size: 18px; text-decoration: none; color: #007bff; }
+#adminLogin:hover { text-decoration: underline; }
+#ad-banner { text-align: center; margin: 20px 0; }
+#native-ad {
   max-width: 600px; 
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  margin: 20px auto; 
+  overflow: hidden;
 }
-.news-item h3 { 
-  margin: 0 0 10px 0; 
-}
-.news-item p { 
-  margin: 0; 
-}
-#adminLogin { 
-  display: block; 
-  text-align: center; 
-  margin: 20px; 
-  font-size: 18px; 
-  text-decoration: none; 
-  color: #007bff; 
-}
-#adminLogin:hover { 
-  text-decoration: underline; 
-}
-#ad-banner {
-  text-align: center;
-  margin: 20px 0;
+#native-ad img { max-height: 180px; object-fit: cover; }
+
+/* Mobile-only Native */
+@media (min-width: 768px) {
+  #native-ad { display: none; }
 }
 </style>
 </head>
@@ -52,24 +32,34 @@ h1 {
 
 <h1>Latest News</h1>
 
-<!-- ✅ Native Ad -->
+<!-- ✅ Native Ad (mobile only) -->
+<div id="native-ad"></div>
 <script async data-cfasync="false"
-  src="https://pl28637177.effectivegatecpm.com/fad14f1164a018aa8db8e8eb354764ac/invoke.js">
+src="https://pl28637177.effectivegatecpm.com/fad14f1164a018aa8db8e8eb354764ac/invoke.js">
 </script>
-<div id="container-fad14f1164a018aa8db8e8eb354764ac"></div>
 
-<!-- ✅ Banner Ad (300x250) -->
+<!-- Banner container -->
 <div id="ad-banner"></div>
 <script>
-  atOptions = {
+let bannerLoaded = false;
+
+function loadBannerAd() {
+  if(bannerLoaded) return;
+  bannerLoaded = true;
+
+  window.atOptions = {
     'key' : '156a5ae4a4cc8e1506a2cc3b96c9b641',
     'format' : 'iframe',
     'height' : 250,
     'width' : 300,
     'params' : {}
   };
+
+  const s = document.createElement('script');
+  s.src = 'https://www.highperformanceformat.com/156a5ae4a4cc8e1506a2cc3b96c9b641/invoke.js';
+  document.getElementById('ad-banner').appendChild(s);
+}
 </script>
-<script src="https://www.highperformanceformat.com/156a5ae4a4cc8e1506a2cc3b96c9b641/invoke.js"></script>
 
 <!-- News List -->
 <div id="newsList"></div>
@@ -88,13 +78,29 @@ async function loadNews() {
   const q = query(collection(db, "news"), orderBy("createdAt","desc"));
   const snapshot = await getDocs(q);
 
+  let count = 0;
   snapshot.forEach(docSnap => {
     const data = docSnap.data();
     const div = document.createElement("div");
     div.classList.add("news-item");
     div.innerHTML = `<h3>${data.title}</h3><p>${data.content}</p>`;
     newsList.appendChild(div);
+    count++;
+
+    // ✅ Insert banner after every 5 news items
+    if(count % 5 === 0) {
+      const bannerDiv = document.createElement('div');
+      bannerDiv.id = 'inline-banner-'+count;
+      bannerDiv.style.textAlign = 'center';
+      newsList.appendChild(bannerDiv);
+
+      // Load banner once
+      if(!bannerLoaded) loadBannerAd();
+    }
   });
+
+  // ✅ Ensure banner on top also
+  loadBannerAd();
 }
 
 loadNews();
