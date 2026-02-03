@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://chhablala7-arch.github.io/my-news-website/sitemap.xml
