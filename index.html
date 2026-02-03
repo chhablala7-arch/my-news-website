@@ -114,54 +114,51 @@ window.atOptions = {
 <hr>
 <h2>लेटेस्ट न्यूज</h2>
 
-<a href="news/sample-news.html">
-  दिल्ली सरकार ने पानी के बिलों पर लेट फीस माफी की सीमा बढ़ाई
-</a>
-  
+<!-- ✅ Auto Links Section -->
+<ul id="autoNewsLinks"></ul>
+
 <script type="module">
 import { db } from "./firebase.js";
 import { collection, getDocs, query, orderBy } from
 "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
 const newsList = document.getElementById("newsList");
+const autoLinks = document.getElementById("autoNewsLinks");
 
 async function loadNews(){
   newsList.innerHTML = "";
+  autoLinks.innerHTML = "";
+
   const q = query(collection(db,"news"), orderBy("createdAt","desc"));
   const snapshot = await getDocs(q);
 
   let count = 0;
-  let bannerCount = 0;
-
   snapshot.forEach(docSnap=>{
     const data = docSnap.data();
 
+    // ✅ News card
     const div = document.createElement("div");
     div.className = "news-item";
     div.innerHTML = `
-  <div class="news-item">
-    ${data.image ? `<img src="${data.image}" alt="${data.title}">` : ""}
-    <h3>${data.title}</h3>
-    <p>${data.content}</p>
-    <small>Views: ${data.views ?? 0}</small>
-  </div>
-`;
+      ${data.image ? `<img src="${data.image}" alt="${data.title}">` : ""}
+      <h3>${data.title}</h3>
+      <p>${data.content}</p>
+      <small>Views: ${data.views ?? 0}</small>
+    `;
 
-    /* 🔥 Popunder button (news के नीचे) */
+    // ✅ Popunder button
     const btn = document.createElement("button");
     btn.className = "pop-btn";
     btn.innerText = "पूरी खबर पढ़ें";
     btn.onclick = ()=>{
       window.open("https://YOUR-POPUNDER-URL","_blank");
     };
-
     div.appendChild(btn);
     newsList.appendChild(div);
     count++;
 
-    /* ✅ Inline Banner हर 5 news के बाद */
+    // ✅ Inline Banner हर 5 news के बाद
     if(count % 5 === 0){
-      bannerCount++;
       const b = document.createElement("div");
       b.className = "inline-banner";
       newsList.appendChild(b);
@@ -171,6 +168,15 @@ async function loadNews(){
       s.async = true;
       b.appendChild(s);
     }
+
+    // ✅ Auto link in homepage
+    const li = document.createElement("li");
+    const a = document.createElement("a");
+    a.href = `./news/${docSnap.id}.html`; // ध्यान: यह convention, अगर तुम अलग नाम use कर रहे हो तो adjust करना
+    a.textContent = data.title;
+    a.target = "_blank";
+    li.appendChild(a);
+    autoLinks.appendChild(li);
   });
 }
 
