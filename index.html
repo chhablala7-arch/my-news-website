@@ -21,6 +21,20 @@ h1 { text-align: center; color: #333; }
 @media (min-width: 768px) {
   #native-ad { display: none; }
 }
+
+/* Popunder button */
+#popunder-btn {
+  display: block;
+  margin: 20px auto;
+  padding: 12px 20px;
+  background: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  cursor: pointer;
+}
+#popunder-btn:hover { background: #0056b3; }
 </style>
 </head>
 
@@ -66,6 +80,18 @@ const extraAdScript = document.createElement('script');
 extraAdScript.src = 'https://pl28638101.effectivegatecpm.com/86/dc/61/86dc615d03616505d0012f407e25655d.js';
 extraAdScript.async = true;
 document.getElementById('extra-ad').appendChild(extraAdScript);
+</script>
+
+<!-- Popunder Button -->
+<button id="popunder-btn">Click here to view full news</button>
+<script>
+document.getElementById('popunder-btn').addEventListener('click', function() {
+  window.open(
+    'https://your-popunder-ad-url.com', // Replace with your popunder ad URL
+    '_blank',
+    'width=1,height=1,scrollbars=no,menubar=no,status=no,toolbar=no'
+  );
+});
 </script>
 
 <!-- News List -->
