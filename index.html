@@ -13,12 +13,8 @@ h1 { text-align: center; color: #333; }
 .news-item p { margin: 0; }
 #adminLogin { display: block; text-align: center; margin: 20px; font-size: 18px; text-decoration: none; color: #007bff; }
 #adminLogin:hover { text-decoration: underline; }
-#ad-banner, .inline-banner { text-align: center; margin: 20px 0; }
-#native-ad {
-  max-width: 600px; 
-  margin: 20px auto; 
-  overflow: hidden;
-}
+#ad-banner, .inline-banner, #extra-ad { text-align: center; margin: 20px 0; }
+#native-ad { max-width: 600px; margin: 20px auto; overflow: hidden; }
 #native-ad img { max-height: 180px; object-fit: cover; }
 
 /* Mobile-only Native */
@@ -32,7 +28,7 @@ h1 { text-align: center; color: #333; }
 
 <h1>Latest News</h1>
 
-<!-- Native Ad (mobile only) -->
+<!-- Mobile-only Native Ad -->
 <div id="native-ad"></div>
 <script async data-cfasync="false"
 src="https://pl28637177.effectivegatecpm.com/fad14f1164a018aa8db8e8eb354764ac/invoke.js">
@@ -63,6 +59,15 @@ loadBanner('ad-banner');
 bannerLoaded = true;
 </script>
 
+<!-- Extra Ad Script -->
+<div id="extra-ad"></div>
+<script>
+const extraAdScript = document.createElement('script');
+extraAdScript.src = 'https://pl28638101.effectivegatecpm.com/86/dc/61/86dc615d03616505d0012f407e25655d.js';
+extraAdScript.async = true;
+document.getElementById('extra-ad').appendChild(extraAdScript);
+</script>
+
 <!-- News List -->
 <div id="newsList"></div>
 
@@ -91,7 +96,7 @@ async function loadNews() {
     newsList.appendChild(div);
     count++;
 
-    // ✅ Insert banner after every 5 news items
+    // Insert inline banner every 5 news items
     if(count % 5 === 0) {
       inlineBannerCount++;
       const bannerDiv = document.createElement('div');
@@ -99,7 +104,7 @@ async function loadNews() {
       bannerDiv.id = 'inline-banner-' + inlineBannerCount;
       newsList.appendChild(bannerDiv);
 
-      // Load banner script for this container
+      // Load banner for this container
       loadBanner('inline-banner-' + inlineBannerCount);
     }
   });
