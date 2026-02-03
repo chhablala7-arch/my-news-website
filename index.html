@@ -1,52 +1,26 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>My News Website</title>
-  <meta charset="UTF-8">
-
-  <!-- Firebase -->
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
-  <script src="firebase.js"></script>
-
-  <style>
-    body { font-family: Arial; padding: 15px; }
-    .news {
-      border: 1px solid #ddd;
-      padding: 10px;
-      margin-bottom: 10px;
-      border-radius: 6px;
-    }
-  </style>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>News</title>
 </head>
 <body>
 
-<h1>📰 Latest News</h1>
-<a href="login.html">Admin Login</a>
-<hr>
+<h2>Latest News</h2>
+<div id="news"></div>
 
-<div id="newsList">Loading news...</div>
+<script type="module">
+import { db } from "./firebase.js";
+import { collection, getDocs } from
+"https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
-<script>
-var db = firebase.firestore();
+const newsDiv = document.getElementById("news");
 
-db.collection("news")
-.orderBy("time", "desc")
-.onSnapshot(snapshot => {
-  let html = "";
-  if (snapshot.empty) {
-    html = "<p>No news yet</p>";
-  }
-  snapshot.forEach(doc => {
-    const n = doc.data();
-    html += `
-      <div class="news">
-        <h3>${n.title}</h3>
-        <p>${n.content}</p>
-      </div>
-    `;
-  });
-  document.getElementById("newsList").innerHTML = html;
+const snap = await getDocs(collection(db,"news"));
+snap.forEach(d=>{
+  newsDiv.innerHTML += `
+    <h3>${d.data().title}</h3>
+    <p>${d.data().content}</p><hr>`;
 });
 </script>
 
