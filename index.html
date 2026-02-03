@@ -139,7 +139,7 @@ async function loadNews(){
     const div = document.createElement("div");
     div.className = "news-item";
     div.innerHTML = `
-  <div class="news-card">
+  <div class="news-item">
     ${data.image ? `<img src="${data.image}" alt="${data.title}">` : ""}
     <h3>${data.title}</h3>
     <p>${data.content}</p>
