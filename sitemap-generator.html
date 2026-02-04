@@ -5,8 +5,9 @@
 <title>Sitemap Generator</title>
 </head>
 <body>
+
 <h2>Auto Sitemap Generator</h2>
-<button onclick="generate()">Generate Sitemap</button>
+<button id="genBtn">Generate Sitemap</button>
 
 <pre id="output" style="white-space:pre-wrap;background:#f5f5f5;padding:15px;margin-top:15px"></pre>
 
@@ -15,12 +16,17 @@ import { db } from "./firebase.js";
 import { collection, getDocs }
 from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
-async function generate(){
+const btn = document.getElementById("genBtn");
+const out = document.getElementById("output");
+
+btn.addEventListener("click", async () => {
+  out.innerText = "Generating sitemap...";
+
   const snap = await getDocs(collection(db,"news"));
+
   let xml = `<?xml version="1.0" encoding="UTF-8"?>\n`;
   xml += `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n`;
 
-  // Homepage
   xml += `
   <url>
     <loc>https://chhablala7-arch.github.io/my-news-website/</loc>
@@ -38,9 +44,9 @@ async function generate(){
   });
 
   xml += `\n</urlset>`;
-  document.getElementById("output").innerText = xml;
-}
-
+  out.innerText = xml;
+});
 </script>
+
 </body>
 </html>
