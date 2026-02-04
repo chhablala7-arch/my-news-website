@@ -4,38 +4,92 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>हिंदी न्यूज़</title>
+<!-- 🔹 Default SEO (fallback) -->
+<title>हिंदी न्यूज़ | ताज़ा खबरें</title>
+<meta name="description" content="भारत की ताज़ा हिंदी न्यूज़ पढ़ें।">
 
-<!-- 🚫 Google indexing रोकने के लिए -->
-<meta name="robots" content="noindex, nofollow">
-
-<!-- ✅ Open Graph (WhatsApp / Telegram / FB) -->
+<!-- 🔹 Open Graph (Facebook, WhatsApp, Telegram) -->
 <meta property="og:type" content="article">
 <meta property="og:title" content="हिंदी न्यूज़">
-<meta property="og:description" content="ताज़ा और भरोसेमंद हिंदी समाचार पढ़ें">
-<meta property="og:image" content="https://chhablala7-arch.github.io/my-news-website/default.jpg">
+<meta property="og:description" content="ताज़ा खबरें पढ़ें">
+<meta property="og:image" content="https://via.placeholder.com/600x315">
 <meta property="og:url" content="">
 
-<!-- ✅ Twitter (X) Card -->
+<!-- 🔹 Twitter Card -->
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="हिंदी न्यूज़">
-<meta name="twitter:description" content="ताज़ा और भरोसेमंद हिंदी समाचार पढ़ें">
-<meta name="twitter:image" content="https://chhablala7-arch.github.io/my-news-website/default.jpg">
+<meta name="twitter:description" content="ताज़ा खबरें पढ़ें">
+<meta name="twitter:image" content="https://via.placeholder.com/600x315">
 
-<script>
-  // 🔁 Redirect to real news page
-  const params = new URLSearchParams(window.location.search);
-  const id = params.get("id");
+<style>
+body{
+  font-family:Arial;
+  background:#f5f5f5;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+  margin:0;
+}
+.box{
+  background:#fff;
+  padding:20px;
+  border-radius:8px;
+  box-shadow:0 2px 6px rgba(0,0,0,.1);
+  text-align:center;
+}
+</style>
+</head>
 
-  if (id) {
-    setTimeout(() => {
-      window.location.href = "news.html?id=" + id;
-    }, 200);
+<body>
+<div class="box">
+  🔄 खबर लोड हो रही है...
+</div>
+
+<script type="module">
+import { db } from "./firebase.js";
+import { doc, getDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+
+const params = new URLSearchParams(window.location.search);
+const id = params.get("id");
+
+if(!id){
+  document.body.innerHTML = "❌ News not found";
+}else{
+  const ref = doc(db, "news", id);
+  const snap = await getDoc(ref);
+
+  if(!snap.exists()){
+    document.body.innerHTML = "❌ News not found";
+  }else{
+    const d = snap.data();
+
+    // 🔹 Dynamic SEO
+    document.title = d.title;
+    document.querySelector("meta[name='description']").content =
+      d.content.substring(0,150);
+
+    document.querySelector("meta[property='og:title']").content = d.title;
+    document.querySelector("meta[property='og:description']").content =
+      d.content.substring(0,150);
+    document.querySelector("meta[property='og:image']").content =
+      d.image || "https://via.placeholder.com/600x315";
+    document.querySelector("meta[property='og:url']").content =
+      window.location.href;
+
+    document.querySelector("meta[name='twitter:title']").content = d.title;
+    document.querySelector("meta[name='twitter:description']").content =
+      d.content.substring(0,150);
+    document.querySelector("meta[name='twitter:image']").content =
+      d.image || "https://via.placeholder.com/600x315";
+
+    // 🔁 Redirect to actual news page
+    setTimeout(()=>{
+      window.location.href = `news.html?id=${id}`;
+    }, 1200);
   }
+}
 </script>
 
-</head>
-<body>
-Redirecting...
 </body>
 </html>
