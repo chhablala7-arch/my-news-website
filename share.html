@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>हिंदी न्यूज़</title>
+
+<!-- 🚫 Google indexing रोकने के लिए -->
+<meta name="robots" content="noindex, nofollow">
+
+<!-- ✅ Open Graph (WhatsApp / Telegram / FB) -->
+<meta property="og:type" content="article">
+<meta property="og:title" content="हिंदी न्यूज़">
+<meta property="og:description" content="ताज़ा और भरोसेमंद हिंदी समाचार पढ़ें">
+<meta property="og:image" content="https://chhablala7-arch.github.io/my-news-website/default.jpg">
+<meta property="og:url" content="">
+
+<!-- ✅ Twitter (X) Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="हिंदी न्यूज़">
+<meta name="twitter:description" content="ताज़ा और भरोसेमंद हिंदी समाचार पढ़ें">
+<meta name="twitter:image" content="https://chhablala7-arch.github.io/my-news-website/default.jpg">
+
+<script>
+  // 🔁 Redirect to real news page
+  const params = new URLSearchParams(window.location.search);
+  const id = params.get("id");
+
+  if (id) {
+    setTimeout(() => {
+      window.location.href = "news.html?id=" + id;
+    }, 200);
+  }
+</script>
+
+</head>
+<body>
+Redirecting...
+</body>
+</html>
