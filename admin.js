@@ -15,8 +15,9 @@ const newsForm = document.getElementById("newsForm");
 const newsList = document.getElementById("newsList");
 const logoutBtn = document.getElementById("logoutBtn");
 
-// 🔗 BASE URL (IMPORTANT)
-const BASE_URL = "https://chhablala7-arch.github.io/my-news-website/";
+// 🔗 SHARE BASE URL (IMPORTANT)
+const SHARE_BASE_URL =
+  "https://chhablala7-arch.github.io/my-news-website/share.html?id=";
 
 // Logout
 logoutBtn.addEventListener("click", () => {
@@ -34,7 +35,7 @@ onAuthStateChanged(auth, async (user) => {
 
 // Load news
 async function loadNews() {
-  newsList.innerHTML = '';
+  newsList.innerHTML = "";
 
   const q = query(
     collection(db, "news"),
@@ -55,17 +56,21 @@ async function loadNews() {
       ${data.image ? `<img src="${data.image}" style="width:100%;margin:8px 0;">` : ""}
       <small>Views: ${data.views ?? 0}</small><br><br>
 
-      <button onclick="copyLink('${docSnap.id}', this)">🔗 Copy Link</button>
-      <button onclick="deleteNews('${docSnap.id}')">🗑 Delete</button>
+      <button onclick="copyShareLink('${docSnap.id}', this)">
+        🔗 Copy Share Link
+      </button>
+      <button onclick="deleteNews('${docSnap.id}')">
+        🗑 Delete
+      </button>
     `;
 
     newsList.appendChild(div);
   });
 }
 
-// ✅ COPY LINK FUNCTION (NEW)
-window.copyLink = (id, btn) => {
-  const link = `${BASE_URL}news.html?id=${id}`;
+// ✅ COPY SHARE LINK (FINAL & SAFE)
+window.copyShareLink = (id, btn) => {
+  const link = SHARE_BASE_URL + id;
 
   navigator.clipboard.writeText(link).then(() => {
     const oldText = btn.innerText;
@@ -73,6 +78,8 @@ window.copyLink = (id, btn) => {
     setTimeout(() => {
       btn.innerText = oldText;
     }, 1500);
+  }).catch(() => {
+    alert("❌ Copy failed");
   });
 };
 
