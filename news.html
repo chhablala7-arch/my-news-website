@@ -1,91 +1,125 @@
 <!DOCTYPE html>
-<html lang="hi">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>News Details</title>
+<title>News</title>
 
 <style>
 body{
-  font-family: Arial;
-  background:#f4f4f4;
+  font-family:Arial;
+  background:#f5f5f5;
   margin:0;
-  padding:15px;
+  padding:15px
 }
-.news-box{
+.container{
   max-width:700px;
   margin:auto;
   background:#fff;
-  padding:20px;
+  padding:16px;
   border-radius:8px;
-  box-shadow:0 0 10px rgba(0,0,0,0.1);
+  box-shadow:0 2px 6px rgba(0,0,0,.1)
 }
-.news-box img{
-  width:100%;
-  border-radius:6px;
-  margin-bottom:15px;
-}
-.news-title{
+h1{
   font-size:22px;
-  margin-bottom:10px;
+  margin-bottom:10px
 }
-.news-content{
+img{
+  width:100%;
+  max-height:320px;
+  object-fit:cover;
+  border-radius:6px;
+  margin-bottom:12px
+}
+.meta{
+  font-size:13px;
+  color:#666;
+  margin-bottom:15px
+}
+.content{
   font-size:16px;
   line-height:1.7;
+  color:#222
 }
-.back-btn{
-  display:inline-block;
-  margin-top:20px;
-  padding:10px 15px;
-  background:#1a73e8;
-  color:#fff;
-  text-decoration:none;
-  border-radius:5px;
+#ad-top,.ad-inline{
+  text-align:center;
+  margin:20px 0
 }
 </style>
-</head>
 
+<!-- ✅ Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-4DDF4YYZ9K"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-4DDF4YYZ9K');
+</script>
+
+</head>
 <body>
 
-<div class="news-box" id="newsBox">
+<!-- ✅ TOP BANNER AD -->
+<div id="ad-top">
+<script>
+window.atOptions={
+  'key':'156a5ae4a4cc8e1506a2cc3b96c9b641',
+  'format':'iframe',
+  'height':250,
+  'width':300,
+  'params':{}
+};
+</script>
+<script src="https://www.highperformanceformat.com/156a5ae4a4cc8e1506a2cc3b96c9b641/invoke.js"></script>
+</div>
+
+<div class="container" id="newsBox">
   Loading news...
+</div>
+
+<!-- ✅ INLINE AD -->
+<div class="ad-inline">
+<script async data-cfasync="false"
+src="https://pl28637177.effectivegatecpm.com/fad14f1164a018aa8db8e8eb354764ac/invoke.js">
+</script>
 </div>
 
 <script type="module">
 import { db } from "./firebase.js";
-import { doc, getDoc } from
-"https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+import { doc,getDoc,updateDoc,increment }
+from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
 const box = document.getElementById("newsBox");
 const params = new URLSearchParams(window.location.search);
-const id = params.get("id");
+const newsId = params.get("id");
 
-if(!id){
-  box.innerHTML = "❌ News ID नहीं मिली";
-}
+if(!newsId){
+  box.innerHTML = "❌ News not found";
+}else{
+  const ref = doc(db,"news",newsId);
 
-async function loadNews(){
-  const ref = doc(db,"news",id);
-  const snap = await getDoc(ref);
-
-  if(!snap.exists()){
-    box.innerHTML = "❌ News नहीं मिली";
-    return;
+  // ✅ Auto views increase (1 per session)
+  const viewKey = "viewed_" + newsId;
+  if(!sessionStorage.getItem(viewKey)){
+    updateDoc(ref,{ views: increment(1) });
+    sessionStorage.setItem(viewKey,"1");
   }
 
-  const data = snap.data();
+  const snap = await getDoc(ref);
+  if(!snap.exists()){
+    box.innerHTML = "❌ News not found";
+  }else{
+    const d = snap.data();
+    document.title = d.title;
 
-  document.title = data.title;
-
-  box.innerHTML = `
-    ${data.image ? `<img src="${data.image}">` : ""}
-    <h1 class="news-title">${data.title}</h1>
-    <div class="news-content">${data.content}</div>
-    <a class="back-btn" href="./index.html">← वापस जाएँ</a>
-  `;
+    box.innerHTML = `
+      <h1>${d.title}</h1>
+      ${d.image ? `<img src="${d.image}">` : ""}
+      <div class="meta">Views: ${d.views ?? 0}</div>
+      <div class="content">${d.content}</div>
+    `;
+  }
 }
-
-loadNews();
 </script>
 
 </body>
