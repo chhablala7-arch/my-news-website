@@ -46,55 +46,26 @@ h1 { text-align:center; color:#333; }
   margin:20px auto;
 }
 
-/* Desktop पर native hide */
 @media (min-width:768px){
   #native-ad{ display:none; }
-}
-.news-card {
-  background: #fff;
-  border-radius: 10px;
-  padding: 16px;
-  margin-bottom: 20px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-}
-.news-title {
-  font-size: 20px;
-  font-weight: bold;
-  margin-bottom: 10px;
-}
-.news-excerpt {
-  font-size: 15px;
-  color: #333;
-  line-height: 1.6;
-}
-.read-more {
-  display: inline-block;
-  margin-top: 12px;
-  padding: 10px 16px;
-  background: #1a73e8;
-  color: #fff;
-  text-decoration: none;
-  border-radius: 6px;
-  font-size: 14px;
 }
 </style>
 
 <!-- ✅ Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-4DDF4YYZ9K"></script>
 <script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-4DDF4YYZ9K');
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-4DDF4YYZ9K');
 </script>
 
 </head>
-
 <body>
 
 <h1>Latest News</h1>
 
-<!-- ✅ Native Ad (Mobile Only) -->
+<!-- ✅ Native Ad -->
 <div id="native-ad"></div>
 <script async data-cfasync="false"
 src="https://pl28637177.effectivegatecpm.com/fad14f1164a018aa8db8e8eb354764ac/invoke.js">
@@ -113,15 +84,13 @@ window.atOptions = {
 </script>
 <script src="https://www.highperformanceformat.com/156a5ae4a4cc8e1506a2cc3b96c9b641/invoke.js"></script>
 
-<!-- ✅ Extra Ad Script -->
 <div id="extra-ad"></div>
 <script src="https://pl28638101.effectivegatecpm.com/86/dc/61/86dc615d03616505d0012f407e25655d.js" async></script>
 
-<!-- ✅ News List -->
 <div id="newsList"></div>
+
 <hr>
 <h2>लेटेस्ट न्यूज</h2>
-
 <ul id="autoNewsLinks"></ul>
 
 <script type="module">
@@ -133,49 +102,51 @@ const newsList = document.getElementById("newsList");
 const autoLinks = document.getElementById("autoNewsLinks");
 
 async function loadNews(){
-  newsList.innerHTML = "";
-  autoLinks.innerHTML = "";
-
   const q = query(collection(db,"news"), orderBy("createdAt","desc"));
   const snapshot = await getDocs(q);
 
   let count = 0;
+
   snapshot.forEach(docSnap=>{
     const data = docSnap.data();
 
     const div = document.createElement("div");
     div.className = "news-item";
     div.innerHTML = `
-      ${data.image ? `<img src="${data.image}" alt="${data.title}">` : ""}
+      ${data.image ? `<img src="${data.image}">` : ""}
       <h3>${data.title}</h3>
       <p>${data.content}</p>
       <small>Views: ${data.views ?? 0}</small>
     `;
 
+    // ✅ Read full news button (FIXED)
     const btn = document.createElement("button");
     btn.className = "pop-btn";
     btn.innerText = "पूरी खबर पढ़ें";
     btn.onclick = ()=>{
-      window.open("https://YOUR-POPUNDER-URL","_blank");
+      window.location.href = `news.html?id=${docSnap.id}`;
     };
     div.appendChild(btn);
+
     newsList.appendChild(div);
     count++;
 
+    // Inline ad
     if(count % 5 === 0){
-      const b = document.createElement("div");
-      b.className = "inline-banner";
-      newsList.appendChild(b);
+      const ad = document.createElement("div");
+      ad.className = "inline-banner";
+      newsList.appendChild(ad);
 
       const s = document.createElement("script");
       s.src = "https://www.highperformanceformat.com/156a5ae4a4cc8e1506a2cc3b96c9b641/invoke.js";
       s.async = true;
-      b.appendChild(s);
+      ad.appendChild(s);
     }
 
+    // ✅ Auto links (FIXED)
     const li = document.createElement("li");
     const a = document.createElement("a");
-    a.href = `./news/${docSnap.id}.html`;
+    a.href = `news.html?id=${docSnap.id}`;
     a.textContent = data.title;
     a.target = "_blank";
     li.appendChild(a);
