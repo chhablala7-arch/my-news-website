@@ -1,17 +1,23 @@
 <!DOCTYPE html>
-<html lang="hi">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>News</title>
 
-<!-- ✅ Open Graph (Social Share) -->
+<!-- ✅ Open Graph (WhatsApp / Telegram / FB) -->
 <meta property="og:type" content="article">
 <meta property="og:title" content="">
 <meta property="og:description" content="">
 <meta property="og:image" content="">
 <meta property="og:url" content="">
+
+<!-- ✅ Twitter (X) Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="">
+<meta name="twitter:description" content="">
+<meta name="twitter:image" content="">
 
 <style>
 body{
@@ -119,21 +125,31 @@ if(!newsId){
   }else{
     const d = snap.data();
 
-    // ✅ SEO + SOCIAL SHARE SETUP (NEW)
+    /* 🔥 SEO + SOCIAL META SET */
     document.title = d.title + " | हिंदी न्यूज़";
 
-    document.querySelector('meta[property="og:title"]').setAttribute(
-      "content", d.title
-    );
+    document.querySelector('meta[property="og:title"]').setAttribute("content", d.title);
     document.querySelector('meta[property="og:description"]').setAttribute(
-      "content", d.content.substring(0,120)
+      "content",
+      d.content.substring(0,120)
     );
     document.querySelector('meta[property="og:image"]').setAttribute(
       "content",
       d.image || "https://chhablala7-arch.github.io/my-news-website/default.jpg"
     );
     document.querySelector('meta[property="og:url"]').setAttribute(
-      "content", window.location.href
+      "content",
+      window.location.href
+    );
+
+    document.querySelector('meta[name="twitter:title"]').setAttribute("content", d.title);
+    document.querySelector('meta[name="twitter:description"]').setAttribute(
+      "content",
+      d.content.substring(0,120)
+    );
+    document.querySelector('meta[name="twitter:image"]').setAttribute(
+      "content",
+      d.image || "https://chhablala7-arch.github.io/my-news-website/default.jpg"
     );
 
     box.innerHTML = `
