@@ -3,12 +3,27 @@
 
   <url>
     <loc>https://chhablala7-arch.github.io/my-news-website/</loc>
-    <lastmod>2026-02-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
   </url>
-
   <url>
-    <loc>https://chhablala7-arch.github.io/my-news-website/news/sample-news.html</loc>
-    <lastmod>2026-02-03</lastmod>
+    <loc>https://chhablala7-arch.github.io/my-news-website/news.html?id=MBdlCidwx8XRkQMDymtM</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
   </url>
-
+  <url>
+    <loc>https://chhablala7-arch.github.io/my-news-website/news.html?id=R5qMhzwUmG30asPle89i</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://chhablala7-arch.github.io/my-news-website/news.html?id=news1</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://chhablala7-arch.github.io/my-news-website/news.html?id=xJBSneyoU98f78pDZVuh</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
 </urlset>
