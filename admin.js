@@ -15,6 +15,9 @@ const newsForm = document.getElementById("newsForm");
 const newsList = document.getElementById("newsList");
 const logoutBtn = document.getElementById("logoutBtn");
 
+// 🔗 BASE URL (IMPORTANT)
+const BASE_URL = "https://chhablala7-arch.github.io/my-news-website/";
+
 // Logout
 logoutBtn.addEventListener("click", () => {
   signOut(auth).then(() => window.location.href = "login.html");
@@ -50,13 +53,28 @@ async function loadNews() {
       <h4>${data.title}</h4>
       <p>${data.content}</p>
       ${data.image ? `<img src="${data.image}" style="width:100%;margin:8px 0;">` : ""}
-      <small>Views: ${data.views ?? 0}</small><br>
-      <button onclick="deleteNews('${docSnap.id}')">Delete</button>
+      <small>Views: ${data.views ?? 0}</small><br><br>
+
+      <button onclick="copyLink('${docSnap.id}', this)">🔗 Copy Link</button>
+      <button onclick="deleteNews('${docSnap.id}')">🗑 Delete</button>
     `;
 
     newsList.appendChild(div);
   });
 }
+
+// ✅ COPY LINK FUNCTION (NEW)
+window.copyLink = (id, btn) => {
+  const link = `${BASE_URL}news.html?id=${id}`;
+
+  navigator.clipboard.writeText(link).then(() => {
+    const oldText = btn.innerText;
+    btn.innerText = "✅ Copied";
+    setTimeout(() => {
+      btn.innerText = oldText;
+    }, 1500);
+  });
+};
 
 // Add news
 newsForm.addEventListener("submit", async (e) => {
