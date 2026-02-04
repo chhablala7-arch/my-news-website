@@ -50,7 +50,7 @@ h1 { text-align:center; color:#333; }
 @media (min-width:768px){
   #native-ad{ display:none; }
 }
-  .news-card {
+.news-card {
   background: #fff;
   border-radius: 10px;
   padding: 16px;
@@ -62,13 +62,11 @@ h1 { text-align:center; color:#333; }
   font-weight: bold;
   margin-bottom: 10px;
 }
-
 .news-excerpt {
   font-size: 15px;
   color: #333;
   line-height: 1.6;
 }
-
 .read-more {
   display: inline-block;
   margin-top: 12px;
@@ -80,6 +78,16 @@ h1 { text-align:center; color:#333; }
   font-size: 14px;
 }
 </style>
+
+<!-- ✅ Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-4DDF4YYZ9K"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-4DDF4YYZ9K');
+</script>
+
 </head>
 
 <body>
@@ -114,7 +122,6 @@ window.atOptions = {
 <hr>
 <h2>लेटेस्ट न्यूज</h2>
 
-<!-- ✅ Auto Links Section -->
 <ul id="autoNewsLinks"></ul>
 
 <script type="module">
@@ -136,7 +143,6 @@ async function loadNews(){
   snapshot.forEach(docSnap=>{
     const data = docSnap.data();
 
-    // ✅ News card
     const div = document.createElement("div");
     div.className = "news-item";
     div.innerHTML = `
@@ -146,7 +152,6 @@ async function loadNews(){
       <small>Views: ${data.views ?? 0}</small>
     `;
 
-    // ✅ Popunder button
     const btn = document.createElement("button");
     btn.className = "pop-btn";
     btn.innerText = "पूरी खबर पढ़ें";
@@ -157,7 +162,6 @@ async function loadNews(){
     newsList.appendChild(div);
     count++;
 
-    // ✅ Inline Banner हर 5 news के बाद
     if(count % 5 === 0){
       const b = document.createElement("div");
       b.className = "inline-banner";
@@ -169,10 +173,9 @@ async function loadNews(){
       b.appendChild(s);
     }
 
-    // ✅ Auto link in homepage
     const li = document.createElement("li");
     const a = document.createElement("a");
-    a.href = `./news/${docSnap.id}.html`; // ध्यान: यह convention, अगर तुम अलग नाम use कर रहे हो तो adjust करना
+    a.href = `./news/${docSnap.id}.html`;
     a.textContent = data.title;
     a.target = "_blank";
     li.appendChild(a);
