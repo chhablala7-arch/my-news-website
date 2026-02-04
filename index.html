@@ -3,61 +3,67 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>News Home</title>
+<title>Latest News</title>
 
 <style>
-body { font-family: Arial; background:#f9f9f9; margin:0; padding:15px; }
-h1 { text-align:center; color:#333; }
+body{font-family:Arial;background:#f5f5f5;margin:0;padding:15px}
+h1{text-align:center}
 
-.news-item {
+.news-item{
   background:#fff;
   padding:15px;
   margin:15px auto;
-  border-radius:8px;
   max-width:600px;
-  box-shadow:0 0 10px rgba(0,0,0,0.1);
+  border-radius:8px;
+  box-shadow:0 2px 6px rgba(0,0,0,.1)
 }
-.news-item h3 { margin:0 0 10px; }
-.news-item p { margin:0; }
+.news-item img{
+  width:100%;
+  max-height:220px;
+  object-fit:cover;
+  border-radius:6px;
+  margin-bottom:10px
+}
+.news-title{
+  font-size:18px;
+  font-weight:bold;
+  margin-bottom:8px;
+  pointer-events:auto;
+  position:relative;
+  z-index:10;
+}
+.news-text{font-size:14px;color:#333}
 
-.pop-btn{
-  margin-top:10px;
-  padding:8px 15px;
-  background:#007bff;
+.read-btn{
+  margin-top:12px;
+  width:100%;
+  padding:10px;
+  background:#1a73e8;
   color:#fff;
   border:none;
-  border-radius:5px;
-  cursor:pointer;
+  border-radius:6px;
+  font-size:15px;
+  cursor:pointer
 }
 
-#ad-banner, .inline-banner, #extra-ad {
+#ad-top,.inline-ad,#native-ad{
   text-align:center;
-  margin:20px 0;
-}
-.news-item img {
-  width: 100%;
-  max-height: 250px;
-  object-fit: cover;
-  border-radius: 6px;
-  margin-bottom: 10px;
-}
-#native-ad{
-  max-width:600px;
-  margin:20px auto;
+  margin:20px 0
 }
 
-@media (min-width:768px){
-  #native-ad{ display:none; }
+/* Mobile native only */
+@media(min-width:768px){
+  #native-ad{display:none}
 }
 </style>
 
 <!-- ✅ Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-4DDF4YYZ9K"></script>
 <script>
-window.dataLayer = window.dataLayer || [];
+window.dataLayer=window.dataLayer||[];
 function gtag(){dataLayer.push(arguments);}
-gtag('js', new Date());
-gtag('config', 'G-4DDF4YYZ9K');
+gtag('js',new Date());
+gtag('config','G-4DDF4YYZ9K');
 </script>
 
 </head>
@@ -65,92 +71,74 @@ gtag('config', 'G-4DDF4YYZ9K');
 
 <h1>Latest News</h1>
 
-<!-- ✅ Native Ad -->
+<!-- ✅ TOP BANNER -->
+<div id="ad-top"></div>
+<script>
+window.atOptions={
+  'key':'156a5ae4a4cc8e1506a2cc3b96c9b641',
+  'format':'iframe',
+  'height':250,
+  'width':300,
+  'params':{}
+};
+</script>
+<script src="https://www.highperformanceformat.com/156a5ae4a4cc8e1506a2cc3b96c9b641/invoke.js"></script>
+
+<!-- ✅ Native Ad (Mobile) -->
 <div id="native-ad"></div>
 <script async data-cfasync="false"
 src="https://pl28637177.effectivegatecpm.com/fad14f1164a018aa8db8e8eb354764ac/invoke.js">
 </script>
 
-<!-- ✅ Top Banner -->
-<div id="ad-banner"></div>
-<script>
-window.atOptions = {
-  'key' : '156a5ae4a4cc8e1506a2cc3b96c9b641',
-  'format' : 'iframe',
-  'height' : 250,
-  'width' : 300,
-  'params' : {}
-};
-</script>
-<script src="https://www.highperformanceformat.com/156a5ae4a4cc8e1506a2cc3b96c9b641/invoke.js"></script>
-
-<div id="extra-ad"></div>
-<script src="https://pl28638101.effectivegatecpm.com/86/dc/61/86dc615d03616505d0012f407e25655d.js" async></script>
-
 <div id="newsList"></div>
-
-<hr>
-<h2>लेटेस्ट न्यूज</h2>
-<ul id="autoNewsLinks"></ul>
 
 <script type="module">
 import { db } from "./firebase.js";
-import { collection, getDocs, query, orderBy } from
-"https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+import { collection,getDocs,query,orderBy }
+from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
-const newsList = document.getElementById("newsList");
-const autoLinks = document.getElementById("autoNewsLinks");
+const newsList=document.getElementById("newsList");
+
+let popUsed=false; // 1 pop per session
 
 async function loadNews(){
-  const q = query(collection(db,"news"), orderBy("createdAt","desc"));
-  const snapshot = await getDocs(q);
+  const q=query(collection(db,"news"),orderBy("createdAt","desc"));
+  const snap=await getDocs(q);
+  let count=0;
 
-  let count = 0;
-
-  snapshot.forEach(docSnap=>{
-    const data = docSnap.data();
-
-    const div = document.createElement("div");
-    div.className = "news-item";
-    div.innerHTML = `
-      ${data.image ? `<img src="${data.image}">` : ""}
-      <h3>${data.title}</h3>
-      <p>${data.content}</p>
-      <small>Views: ${data.views ?? 0}</small>
+  snap.forEach(doc=>{
+    const d=doc.data();
+    const box=document.createElement("div");
+    box.className="news-item";
+    box.innerHTML=`
+      ${d.image?`<img src="${d.image}">`:""}
+      <div class="news-title">${d.title}</div>
+      <div class="news-text">${d.content.substring(0,120)}...</div>
     `;
 
-    // ✅ Read full news button (FIXED)
-    const btn = document.createElement("button");
-    btn.className = "pop-btn";
-    btn.innerText = "पूरी खबर पढ़ें";
-    btn.onclick = ()=>{
-      window.location.href = `news.html?id=${docSnap.id}`;
-    };
-    div.appendChild(btn);
+    const btn=document.createElement("button");
+    btn.className="read-btn";
+    btn.innerText="पूरी खबर पढ़ें";
 
-    newsList.appendChild(div);
+    btn.onclick=()=>{
+      if(!popUsed){
+        window.open("https://YOUR-POPUNDER-URL","_blank");
+        popUsed=true;
+      }
+      window.location.href=`news.html?id=${doc.id}`;
+    };
+
+    box.appendChild(btn);
+    newsList.appendChild(box);
     count++;
 
-    // Inline ad
-    if(count % 5 === 0){
-      const ad = document.createElement("div");
-      ad.className = "inline-banner";
+    // Inline banner every 4 news
+    if(count%4===0){
+      const ad=document.createElement("div");
+      ad.className="inline-ad";
+      ad.innerHTML=`<script src="https://www.highperformanceformat.com/156a5ae4a4cc8e1506a2cc3b96c9b641/invoke.js"><\/script>`;
       newsList.appendChild(ad);
-
-      const s = document.createElement("script");
-      s.src = "https://www.highperformanceformat.com/156a5ae4a4cc8e1506a2cc3b96c9b641/invoke.js";
-      s.async = true;
-      ad.appendChild(s);
     }
-
-    // ✅ Auto links (FIXED)
-    const li = document.createElement("li");
-    const a = document.createElement("a");
-    a.href = `news.html?id=${docSnap.id}`;
-    a.textContent = data.title;
-    a.target = "_blank";
-    li.appendChild(a);
-    autoLinks.appendChild(li);
   });
 }
 
