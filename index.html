@@ -1,9 +1,14 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hi">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>हिंदी न्यूज</title>
+
+<!-- ✅ SEO Title -->
+<title>हिंदी न्यूज़ | ताज़ा खबरें, बजट और रेलवे अपडेट</title>
+
+<!-- ✅ Meta Description -->
+<meta name="description" content="हिंदी न्यूज़ में पढ़ें भारत की ताज़ा खबरें। बजट, रेलवे, शेयर बाजार और सरकारी योजनाओं देश दुनिया की लेटेस्ट जानकारी।">
 
 <style>
 body{font-family:Arial;background:#f5f5f5;margin:0;padding:15px}
@@ -51,7 +56,6 @@ h1{text-align:center}
   margin:20px 0
 }
 
-/* Mobile native only */
 @media(min-width:768px){
   #native-ad{display:none}
 }
@@ -69,7 +73,8 @@ gtag('config','G-4DDF4YYZ9K');
 </head>
 <body>
 
-<h1>Latest News</h1>
+<!-- ✅ SITE NAME (CHANGED) -->
+<h1>हिंदी न्यूज़</h1>
 
 <!-- ✅ TOP BANNER -->
 <div id="ad-top"></div>
@@ -98,8 +103,7 @@ import { collection,getDocs,query,orderBy }
 from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
 const newsList=document.getElementById("newsList");
-
-let popUsed=false; // 1 pop per session
+let popUsed=false;
 
 async function loadNews(){
   const q=query(collection(db,"news"),orderBy("createdAt","desc"));
@@ -132,7 +136,6 @@ async function loadNews(){
     newsList.appendChild(box);
     count++;
 
-    // Inline banner every 4 news
     if(count%4===0){
       const ad=document.createElement("div");
       ad.className="inline-ad";
