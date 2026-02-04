@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>News Details</title>
+
+<style>
+body{
+  font-family: Arial;
+  background:#f4f4f4;
+  margin:0;
+  padding:15px;
+}
+.news-box{
+  max-width:700px;
+  margin:auto;
+  background:#fff;
+  padding:20px;
+  border-radius:8px;
+  box-shadow:0 0 10px rgba(0,0,0,0.1);
+}
+.news-box img{
+  width:100%;
+  border-radius:6px;
+  margin-bottom:15px;
+}
+.news-title{
+  font-size:22px;
+  margin-bottom:10px;
+}
+.news-content{
+  font-size:16px;
+  line-height:1.7;
+}
+.back-btn{
+  display:inline-block;
+  margin-top:20px;
+  padding:10px 15px;
+  background:#1a73e8;
+  color:#fff;
+  text-decoration:none;
+  border-radius:5px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="news-box" id="newsBox">
+  Loading news...
+</div>
+
+<script type="module">
+import { db } from "./firebase.js";
+import { doc, getDoc } from
+"https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+
+const box = document.getElementById("newsBox");
+const params = new URLSearchParams(window.location.search);
+const id = params.get("id");
+
+if(!id){
+  box.innerHTML = "❌ News ID नहीं मिली";
+}
+
+async function loadNews(){
+  const ref = doc(db,"news",id);
+  const snap = await getDoc(ref);
+
+  if(!snap.exists()){
+    box.innerHTML = "❌ News नहीं मिली";
+    return;
+  }
+
+  const data = snap.data();
+
+  document.title = data.title;
+
+  box.innerHTML = `
+    ${data.image ? `<img src="${data.image}">` : ""}
+    <h1 class="news-title">${data.title}</h1>
+    <div class="news-content">${data.content}</div>
+    <a class="back-btn" href="./index.html">← वापस जाएँ</a>
+  `;
+}
+
+loadNews();
+</script>
+
+</body>
+</html>
