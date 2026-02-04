@@ -1,9 +1,17 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hi">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>News</title>
+
+<!-- ✅ Open Graph (Social Share) -->
+<meta property="og:type" content="article">
+<meta property="og:title" content="">
+<meta property="og:description" content="">
+<meta property="og:image" content="">
+<meta property="og:url" content="">
 
 <style>
 body{
@@ -110,7 +118,23 @@ if(!newsId){
     box.innerHTML = "❌ News not found";
   }else{
     const d = snap.data();
-    document.title = d.title;
+
+    // ✅ SEO + SOCIAL SHARE SETUP (NEW)
+    document.title = d.title + " | हिंदी न्यूज़";
+
+    document.querySelector('meta[property="og:title"]').setAttribute(
+      "content", d.title
+    );
+    document.querySelector('meta[property="og:description"]').setAttribute(
+      "content", d.content.substring(0,120)
+    );
+    document.querySelector('meta[property="og:image"]').setAttribute(
+      "content",
+      d.image || "https://chhablala7-arch.github.io/my-news-website/default.jpg"
+    );
+    document.querySelector('meta[property="og:url"]').setAttribute(
+      "content", window.location.href
+    );
 
     box.innerHTML = `
       <h1>${d.title}</h1>
